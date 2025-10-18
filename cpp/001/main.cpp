@@ -3,16 +3,40 @@
 using namespace  std;
 
 int main () {
-    cout << "enter your first name\n";
-    string firstName;
-    cin >> firstName;
-    cout << "hello, " << firstName;
+
+    //just another test for cin
+
+    cout << "enter name and age: ";
+    string name = "???";
+    int age = -1;
+
+    cin >> name >> age;
+
+    //cout << "helloww, " << name << "! (" << age << " years old)\n";
+
+    cout << cin.good();
+
+    if (cin) { // or cin.good()
+        cout << "helloww, " << name << "! (" << age << " years old)\n";
+    } else {
+        cout << "value of name is: " << name << "\n";
+        cout << "value of age is: " << age << "\n";
+    }
+
+    return 0;
+
 }
 
-// what is definition -- it is when you introduce a new name for a variable in your program and set aside memory for it
-// cin refers to standard input stream -- stands for character input
-// cin is defined in the standard library
-// when you cin and press enter, the new ine will not stored when you hit enter
+/*
+ * the "places" in which we store data in memory are called object, a named object is called variable
+ * = is called an initializer
+ * the reason for the name double is historical, it is short for double-precision floating point
+ * >> this is the input operator
+ * << this of course is the output operator
+ * reading string into a variable using cin is terminated by a whitespace!! (so i tried this i can do either return key or simple space)
+ * whitespaces are all ignored by the >> operator in cin
+ * i get the >> is sensitive to type but i dont get who << is sensitive to type
+ */
 
 
 
