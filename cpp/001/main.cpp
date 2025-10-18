@@ -1,8 +1,10 @@
 #include <iostream>
 
 int main () {
-    std::cout << "Hello World!\n";
-    return 0;
+    std::cout << "Hello, programming!\n";
+    std::cout << "Here we go!";
+    // return 0;
+    // still works even if i remove the return on main
 }
 
 /*
