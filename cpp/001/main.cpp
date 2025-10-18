@@ -2,6 +2,9 @@
 
 using namespace  std;
 
+// so when age is set to a string and results to 0 instead of -1 -- this is non-standard but common
+// should i switch to linux?
+
 int main () {
 
     //just another test for cin
