@@ -2,19 +2,26 @@
 
 using namespace std;
 
+//test concatenation and if
+
 int main () {
 
-    cout << "enter floating-point number here: ";
-    double n = 0;
-    cin >> n;
-    cout << "n == " << n << "\n"
-         << "n+1 == " << n+1 << "\n"
-         << "three times n == " << 3*n << "\n"
-         << "twice n == " << n+n << "\n"
-         << "n squared == " << n*n << "\n"
-         << "half of n == " << n/2 << "\n"
-         << "square root of n == " << sqrt(n) << "\n";
-}
+    string string1;
+    string string2;
 
-// the notation for = is == instead of = ... because plain = is for assignment
-// many operation are represented as named functions liek sqrt(n)
+    cout << "enter your first and second name separated by whitespace: ";
+    cin >> string1 >> string2;
+
+    if (string1 == string2) {
+        cout << "you entered the same name twice";
+    }
+
+    if (string1 < string2) {
+        cout << string1 << " is alphabethically before " << string2;
+    }
+
+    if (string1 > string2) {
+        cout << string1 << " is alphabethically after " << string2;
+    }
+
+}
