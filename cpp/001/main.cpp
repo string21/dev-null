@@ -17,3 +17,4 @@ int main () {
 }
 
 // the notation for = is == instead of = ... because plain = is for assignment
+// many operation are represented as named functions liek sqrt(n)
