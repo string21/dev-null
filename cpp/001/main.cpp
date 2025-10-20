@@ -1,22 +1,40 @@
 #include <iostream>
+using namespace std;
 
-using namespace  std;
+constexpr double y = 1;
+constexpr double k = 2;
+constexpr double p = 3;
+
+double convertDollar(double dollar, char unit);
 
 int main () {
 
-    cout << "enter number 1 and number 2 separated by whitespace: ";
-    double num1 = 0;
-    double num2 = 0;
+    double dollar = 0;
+    char unit;
+    double result = 0;
 
-    cin >> num1 >> num2;
+    cout << "enter dollar to convert and unit separated by whitespace: ";
 
-    if (num1 > num2) cout << num1 << " is larger than " << num2;
-    else if (num1 < num2) cout << num2 << " is larger than " << num1;
-    else cout << "they are equal";
-    cout << "\n";
+    cin >> dollar >> unit;
 
-    cout << "the difference is " << num1 - num2 << "\n";
-    cout << "the product is " << num1 * num2 << "\n";
-    cout << "ratio is " << num1 / num2;
+    result = convertDollar(dollar, unit);
+
+    if (result)
+        cout << dollar << " USD is " << result << unit;
+    else
+        cout << "check your input";
+
+
+
+    return 0;
+}
+
+double convertDollar(double dollar, char unit) {
+    if (unit == 'y')
+        return dollar * y;
+    else if (unit == 'k')
+        return dollar * k;
+    else if (unit == 'p')
+        return dollar * p;
     return 0;
 }
