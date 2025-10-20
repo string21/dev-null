@@ -22,7 +22,7 @@ int main () {
     if (result)
         cout << dollar << " USD is " << result << unit;
     else
-        cout << "check your input";
+        cout << "check your input"
 
 
 
