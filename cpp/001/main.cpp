@@ -4,14 +4,19 @@ using namespace  std;
 
 int main () {
 
-    cout << "miles to km converter....\n\n";
+    cout << "enter number 1 and number 2 separated by whitespace: ";
+    double num1 = 0;
+    double num2 = 0;
 
-    double miles = 0.00;
+    cin >> num1 >> num2;
 
-    cout << "enter number to convert from miles to km: ";
-    cin >> miles;
+    if (num1 > num2) cout << num1 << " is larger than " << num2;
+    else if (num1 < num2) cout << num2 << " is larger than " << num1;
+    else cout << "they are equal";
+    cout << "\n";
 
-    cout << "that is " << miles * 1.609 << " km.";
-
+    cout << "the difference is " << num1 - num2 << "\n";
+    cout << "the product is " << num1 * num2 << "\n";
+    cout << "ratio is " << num1 / num2;
     return 0;
 }
