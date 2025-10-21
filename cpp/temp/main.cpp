@@ -1,32 +1,14 @@
 #include <iostream>
 using namespace std;
 
-/*
- * Implement square() without using the multiplication operator;
- * that is, do the x*x by repeated addition (start a variable result at 0 and add x to it x times).
- * Then run some version of “the first program” using that square().
- */
-
-int square(int x);
+// testing out vector for the first time
 
 int main () {
 
-    cout << "enter a number to square: ";
-    int num = 0;
+    vector<int> age_of_participants = {1, 2, 4, 8};
 
-    cin >> num;
-
-    cout << "the square of " << num << " is " << square(num) << "\n";
+    for (int age : age_of_participants)
+        cout << age;
 
     return 0;
-}
-
-int square(int x) {
-    int total = 0;
-
-    for (int i = 0; i < x; ++i) {
-        total += x;
-    }
-
-    return total;
 }
