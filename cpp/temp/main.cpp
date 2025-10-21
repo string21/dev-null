@@ -4,14 +4,13 @@ using namespace std;
 
 int main () {
 
-    int x = 100;
+    int i = 0;
 
-    if (x == 100) {
-        cout << "1111";
-    } else if (x == 102) {
-        cout << "first else";
-    } else {
-        cout << "second else";
+    while (i < 26   ) {
+
+        cout << char('a' + i) << "\t" << (int) char('a' + i) << "\n";
+
+        ++i;
     }
 
     return 0;
