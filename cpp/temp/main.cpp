@@ -1,14 +1,13 @@
 #include <iostream>
 using namespace std;
 
-// testing out vector for the first time
-
 int main () {
 
-    vector<int> age_of_participants = {1, 2, 4, 8};
+    vector<int> age_of_participants(5);
 
-    for (int age : age_of_participants)
-        cout << age;
+    age_of_participants[0] = 22;
+
+    cout << age_of_participants.at(5);
 
     return 0;
 }
