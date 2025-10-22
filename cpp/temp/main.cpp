@@ -1,20 +1,45 @@
 #include <iostream>
-#include <algorithm>
 using namespace std;
 
+/*
+* Write a program that “bleeps” out words that you don’t like;
+* that is, you read in words using cin and print them again on cout.
+* If a word is among a few you have defined, you write out BLEEP instead of that word.
+* Start with one “disliked word” such as
+* string disliked = "Broccoli";
+* When that works, add a few more.
+*/
+
 int main () {
+
     vector<string> words;
 
-    for(string temp; cin>>temp;)
+    vector<string> dislikedWords = {
+        "red",
+        "fail"
+    };
+
+    for (string temp; cin >> temp;) {
         words.push_back(temp);
-
-    cout << "Number of words:" << words.size() << '\n';
-
-    ranges::sort(words); // sort the words
-
-    for (int i = 0; i<words.size(); ++i) {
-        if (i==0 || words[i-1] != words[i])
-            cout << words[i] << "\n";
     }
+
+    bool isOK = true;
+    for (string word : words) {
+        for (string disliked : dislikedWords) {
+            if (word ==  disliked) {
+                isOK = false;
+            }
+        }
+
+        if (isOK) {
+            cout << word;
+        } else {
+            cout << "BLEEP";
+        }
+        isOK = true;
+        cout << "\n";
+    }
+
+    return 0;
 
 }
