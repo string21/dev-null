@@ -1,13 +1,28 @@
+#include <algorithm>
 #include <iostream>
 using namespace std;
 
 int main () {
 
-    vector<int> age_of_participants(5);
+    vector<double> temps;
 
-    age_of_participants[0] = 22;
+    for (double temp; cin >> temp;)
+        temps.push_back(temp);
 
-    cout << age_of_participants.at(5);
+    for (double t : temps)
+        cout << t << "  ";
+
+    // compute mean
+    double total = 0;
+    for (double t : temps)
+        total += t;
+    cout << "mean is " << total/temps.size() << "\n";
+
+    // compute median
+    ranges::sort(temps);
+    cout << "median is " << temps[temps.size()/2];
+
+
 
     return 0;
 }
