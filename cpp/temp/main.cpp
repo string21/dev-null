@@ -3,32 +3,35 @@
 using namespace std;
 
 /*
- * Write a program that reads a string from input and then,
- * for each character read, prints out the character and its integer value on a line.
+ * fix the median for even number of inputs "drill"
  */
-
-// the first 2 solutions are mine
 
 int main () {
 
-    string word = "another";
+    cout << "enter nubmers or doubles, terminate by entering non-number:\n";
 
-    // solution 1, explicit type conversion
-    cout << "solution 1\n";
-    for (char w : word) {
-        cout << w << "\t" << (int) w << "\n";
+    vector<double> numbers;
+
+    for (double temp; cin >> temp;) {
+        numbers.push_back(temp);
     }
 
-    // solution 2, add 0 to a char
-    cout << "solution 2\n";
-    for (char w : word) {
-        cout << w << "\t" << w + 0 << "\n";
+    cout << "\nthe numbers user entered:\n";
+    for (double n : numbers ) {
+        cout << n << "  ";
     }
 
-    // this third solution is what chatgpt told me when i asked it  to give me a better more modern way to solve in using modern c++
-    cout << "solution 3\n";
-    for (char w : word) {
-        cout << w << "\t" << static_cast<int>(w) << "\n";
+    ranges::sort(numbers);
+
+    if (numbers.size()%2 == 0) {
+        cout << "even\n";
+        double temp = numbers[numbers.size()/2] + numbers[(numbers.size()/2)-1];
+        temp /= 2;
+        cout << "median is " << temp;
+
+    } else {
+        cout << "oddn\n";
+        cout << "median is " << numbers[numbers.size()/2];
     }
 
 }
