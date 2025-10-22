@@ -3,80 +3,32 @@
 using namespace std;
 
 /*
- * chapter drill
+ * Write a program that reads a string from input and then,
+ * for each character read, prints out the character and its integer value on a line.
  */
 
-
+// the first 2 solutions are mine
 
 int main () {
 
-    double smallest {};
-    double largest {};
+    string word = "another";
 
-    double temp {};
-    string unit {};
-
-    vector<double> validNums;
-    vector<string> validUnits;
-
-    bool isFirstLoop = true;
-
-    while (cin >> temp >> unit) {
-
-        if (unit == "cm" || unit == "m" || unit == "in" || unit == "ft") {
-            validNums.push_back(temp);
-            validUnits.push_back(unit);
-        } else break;
-
-        if (isFirstLoop) {
-            smallest = temp;
-            largest = temp;
-            isFirstLoop = false;
-        }
-
-        if (temp < smallest) smallest = temp;
-        if (temp > largest) largest = temp;
-
-        cout << "\nsmallest so far is " << smallest;
-        cout << "\nlargest so far is " << largest;
-        cout << "\n\n";
-
+    // solution 1, explicit type conversion
+    cout << "solution 1\n";
+    for (char w : word) {
+        cout << w << "\t" << (int) w << "\n";
     }
 
-    vector<double> numsInMeters;
-    double tempOnly = 0.00;
-    for (int i = 0; i < validUnits.size(); ++i) {
-        if (validUnits[i] == "m") {
-            tempOnly = validNums[i];
-        }
-
-        if (validUnits[i] == "cm") {
-            tempOnly = validNums[i]/100;
-        }
-
-        if (validUnits[i] == "in") {
-            tempOnly = (validNums[i]*2.54)/100;
-        }
-
-        if (validUnits[i] == "ft") {
-            tempOnly = (validNums[i]*12*2.54)/100;
-        }
-
-        numsInMeters.push_back(tempOnly);
+    // solution 2, add 0 to a char
+    cout << "solution 2\n";
+    for (char w : word) {
+        cout << w << "\t" << w + 0 << "\n";
     }
 
-    double total = 0.00;
-    for (double x : numsInMeters) {
-        total += x;
+    // this third solution is what chatgpt told me when i asked it  to give me a better more modern way to solve in using modern c++
+    cout << "solution 3\n";
+    for (char w : word) {
+        cout << w << "\t" << static_cast<int>(w) << "\n";
     }
-
-    ranges::sort(numsInMeters);
-
-    cout << "the total is " << total << " in meters for the following numbers: \n";
-
-    for (double x : numsInMeters) {
-        cout << x << "m  ";
-    }
-
 
 }
