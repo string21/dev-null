@@ -2,44 +2,30 @@
 using namespace std;
 
 /*
-* Write a program that “bleeps” out words that you don’t like;
-* that is, you read in words using cin and print them again on cout.
-* If a word is among a few you have defined, you write out BLEEP instead of that word.
-* Start with one “disliked word” such as
-* string disliked = "Broccoli";
-* When that works, add a few more.
-*/
+ * chapter drill
+ */
 
 int main () {
 
-    vector<string> words;
+    double num1 = 0.00;
+    double num2 = 0.00;
+    cout << "enter two numbers (doubles):\n";
+    while (cin >> num1 >> num2) {
+            cout << num1 << "\t" << num2 << "\n";
 
-    vector<string> dislikedWords = {
-        "red",
-        "fail"
-    };
-
-    for (string temp; cin >> temp;) {
-        words.push_back(temp);
-    }
-
-    bool isOK = true;
-    for (string word : words) {
-        for (string disliked : dislikedWords) {
-            if (word ==  disliked) {
-                isOK = false;
+            if (num1 == num2) {
+                cout << "\nthe numbers are equal";
+            } else if (num1 > num2) {
+                cout << "\nthe larger value is: " << num1;
+                cout << "\nthe smaller value is: " << num2;
+            } else {
+                cout << "\nthe larger value is: " << num2;
+                cout << "\nthe smaller value is: " << num1;
             }
-        }
 
-        if (isOK) {
-            cout << word;
-        } else {
-            cout << "BLEEP";
-        }
-        isOK = true;
-        cout << "\n";
+            if (abs(num1 - num2) < (1.00/100) && num1 != num2) {
+                cout << "\nthey are almost equal";
+            }
     }
-
-    return 0;
 
 }
