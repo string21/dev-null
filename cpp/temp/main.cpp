@@ -1,31 +1,82 @@
 #include <iostream>
+#include <algorithm>
 using namespace std;
 
 /*
  * chapter drill
  */
 
+
+
 int main () {
 
-    double num1 = 0.00;
-    double num2 = 0.00;
-    cout << "enter two numbers (doubles):\n";
-    while (cin >> num1 >> num2) {
-            cout << num1 << "\t" << num2 << "\n";
+    double smallest {};
+    double largest {};
 
-            if (num1 == num2) {
-                cout << "\nthe numbers are equal";
-            } else if (num1 > num2) {
-                cout << "\nthe larger value is: " << num1;
-                cout << "\nthe smaller value is: " << num2;
-            } else {
-                cout << "\nthe larger value is: " << num2;
-                cout << "\nthe smaller value is: " << num1;
-            }
+    double temp {};
+    string unit {};
 
-            if (abs(num1 - num2) < (1.00/100) && num1 != num2) {
-                cout << "\nthey are almost equal";
-            }
+    vector<double> validNums;
+    vector<string> validUnits;
+
+    bool isFirstLoop = true;
+
+    while (cin >> temp >> unit) {
+
+        if (unit == "cm" || unit == "m" || unit == "in" || unit == "ft") {
+            validNums.push_back(temp);
+            validUnits.push_back(unit);
+        } else break;
+
+        if (isFirstLoop) {
+            smallest = temp;
+            largest = temp;
+            isFirstLoop = false;
+        }
+
+        if (temp < smallest) smallest = temp;
+        if (temp > largest) largest = temp;
+
+        cout << "\nsmallest so far is " << smallest;
+        cout << "\nlargest so far is " << largest;
+        cout << "\n\n";
+
     }
+
+    vector<double> numsInMeters;
+    double tempOnly = 0.00;
+    for (int i = 0; i < validUnits.size(); ++i) {
+        if (validUnits[i] == "m") {
+            tempOnly = validNums[i];
+        }
+
+        if (validUnits[i] == "cm") {
+            tempOnly = validNums[i]/100;
+        }
+
+        if (validUnits[i] == "in") {
+            tempOnly = (validNums[i]*2.54)/100;
+        }
+
+        if (validUnits[i] == "ft") {
+            tempOnly = (validNums[i]*12*2.54)/100;
+        }
+
+        numsInMeters.push_back(tempOnly);
+    }
+
+    double total = 0.00;
+    for (double x : numsInMeters) {
+        total += x;
+    }
+
+    ranges::sort(numsInMeters);
+
+    cout << "the total is " << total << " in meters for the following numbers: \n";
+
+    for (double x : numsInMeters) {
+        cout << x << "m  ";
+    }
+
 
 }
