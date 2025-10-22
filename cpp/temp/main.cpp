@@ -1,28 +1,20 @@
-#include <algorithm>
 #include <iostream>
+#include <algorithm>
 using namespace std;
 
 int main () {
+    vector<string> words;
 
-    vector<double> temps;
+    for(string temp; cin>>temp;)
+        words.push_back(temp);
 
-    for (double temp; cin >> temp;)
-        temps.push_back(temp);
+    cout << "Number of words:" << words.size() << '\n';
 
-    for (double t : temps)
-        cout << t << "  ";
+    ranges::sort(words); // sort the words
 
-    // compute mean
-    double total = 0;
-    for (double t : temps)
-        total += t;
-    cout << "mean is " << total/temps.size() << "\n";
+    for (int i = 0; i<words.size(); ++i) {
+        if (i==0 || words[i-1] != words[i])
+            cout << words[i] << "\n";
+    }
 
-    // compute median
-    ranges::sort(temps);
-    cout << "median is " << temps[temps.size()/2];
-
-
-
-    return 0;
 }
