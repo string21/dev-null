@@ -3,48 +3,38 @@ using namespace std;
 
 /*
 *
-* SIMPLE CALCULATOR
-*
-* Write a program that performs as a very simple calculator.
-* Your calculator should be able to handle the four basic math operations –
-* add, subtract, multiply, and divide – on two input values.
-* Your program should prompt the user to enter three arguments:
-* two double values and a character to represent an operation.
-* If the entry arguments are 35.6, 24.1, and '+', the program output
-* should be The sum of 35.6 and 24.1 is 59.7.
+* Make a vector holding the ten string values "zero", "one", . . . "nine".
+* Use that in a program that converts a digit to its corresponding spelled-out value;
+* e.g., the input 7 gives the output seven. Have the same program, using the same input loop,
+* convert spelled-out numbers into their digit form; e.g., the input seven gives the output 7.
 */
 
-string performCalculation(double x, double y, char symbol);
+// the other solution -- use break or continue together with cin.good() check instead of using if else
 
 int main() {
 
-    cout << "enter 2 double numbers and an operator like + - * /  ";
-    double num1 = {};
-    double num2 = {};
-    char theOperator = {};
+    vector<string> nums = {
+        "zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"
+    };
 
-    cin >> num1 >> num2 >> theOperator;
+    auto loop = true;
+    do {
 
-    cout << performCalculation(num1, num2, theOperator);
+        cout << "enter number to convert to string (0 to 9 only): ";
+        int temp = -1;
+        cin >> temp;
 
-}
+        if (!cin.good()) {
+            loop = false;
+        } else {
+            if (temp > nums.size()-1 || temp < 0) {
+                cout << "invalid input";
+            } else {
+                cout << "that converts to " << nums[temp];
+            }
+            cout << "\n";
+        }
 
-string performCalculation(double x, double y, char symbol) {
+    } while (loop);
 
-    switch (symbol) {
-        case '+':
-            return "the sum of "s + to_string(x) + " and " + to_string(y) + " is " + to_string(x+y);
-            break;
-        case '-':
-            return "the diff of "s + to_string(x) + " and " + to_string(y) + " is " + to_string(x-y);
-            break;
-        case '*':
-            return "the product of "s + to_string(x) + " and " + to_string(y) + " is " + to_string(x*y);
-            break;
-        case '/':
-            return "the quotient of "s + to_string(x) + " and " + to_string(y) + " is " + to_string(x/y);
-            break;
-        default:
-            return "invalid input!";
-    }
 }
