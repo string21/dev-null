@@ -2,14 +2,8 @@
 using namespace std;
 
 /*
-*
-* Make a vector holding the ten string values "zero", "one", . . . "nine".
-* Use that in a program that converts a digit to its corresponding spelled-out value;
-* e.g., the input 7 gives the output seven. Have the same program, using the same input loop,
-* convert spelled-out numbers into their digit form; e.g., the input seven gives the output 7.
-*/
-
-// this is solution2 which is cleaner
+ * convert in both directions
+ */
 
 int main() {
 
@@ -17,19 +11,31 @@ int main() {
         "zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"
     };
 
-
     while (true) {
 
-        cout << "enter number to convert to string (0 to 9 only): ";
-        int temp = -1;
-        cin >> temp;
+        cout << "enter number to convert to string (0 to zero) or vice versa (nine to 9), type exit to quit: ";
+        string input;
+        getline(cin, input);
 
-        if (!cin.good()) break;
+        if (!cin.good() || input == "exit") break;
 
-        if (temp > nums.size()-1 || temp < 0) {
-            cout << "invalid input";
-        } else {
-            cout << "that converts to " << nums[temp];
+        bool foundInVector = false;
+        for (int i = 0; i < nums.size(); ++i) {
+            if (input == nums[i]) {
+                cout << i;
+                foundInVector = true;
+                break;
+            }
+
+            if (input == to_string(i)) {
+                cout << nums[i];
+                foundInVector = true;
+                break;
+            }
+        }
+
+        if (!foundInVector) {
+            cout << "invalid input!\n";
         }
 
         cout << "\n";
