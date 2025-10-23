@@ -2,45 +2,49 @@
 using namespace std;
 
 /*
-* Write a program to play a numbers guessing game.
-* The user thinks of a number between 1 and 100 and your program asks questions
-* to figure out what the number is (e.g., “Is the number you are thinking of less than 50?”).
-* Your program should be able to identify the number after asking no more than seven questions.
+*
+* SIMPLE CALCULATOR
+*
+* Write a program that performs as a very simple calculator.
+* Your calculator should be able to handle the four basic math operations –
+* add, subtract, multiply, and divide – on two input values.
+* Your program should prompt the user to enter three arguments:
+* two double values and a character to represent an operation.
+* If the entry arguments are 35.6, 24.1, and '+', the program output
+* should be The sum of 35.6 and 24.1 is 59.7.
 */
 
-// so this is solved by using binary search, i will try to implement that in code
+string performCalculation(double x, double y, char symbol);
 
 int main() {
-    int low = 1;
-    int high = 100;
 
-    cout << "hey user, guess a number from " << low << " to " << high << ": ";
+    cout << "enter 2 double numbers and an operator like + - * /  ";
+    double num1 = {};
+    double num2 = {};
+    char theOperator = {};
 
+    cin >> num1 >> num2 >> theOperator;
 
-    int guess = {};
-    char playerInput = {};
+    cout << performCalculation(num1, num2, theOperator);
 
-    while (low != high) {
+}
 
-        guess = low + (high - low) / 2;
+string performCalculation(double x, double y, char symbol) {
 
-        cout << "\ncurrent low(" << low << ") and current high(" << high << ")";
-        cout << "\nis the number <= " << guess << "? ('y' or 'n'): ";
-        cin >> playerInput;
-        cout << "\n";
-
-        if (playerInput == 'y') {
-            cout << "you choose y";
-            high = guess;
-        } else if (playerInput == 'n') {
-            cout << "you chose n";
-            low = guess + 1;
-        } else {
-            cout << "y or n only!";
-            continue;
-        }
+    switch (symbol) {
+        case '+':
+            return "the sum of "s + to_string(x) + " and " + to_string(y) + " is " + to_string(x+y);
+            break;
+        case '-':
+            return "the diff of "s + to_string(x) + " and " + to_string(y) + " is " + to_string(x-y);
+            break;
+        case '*':
+            return "the product of "s + to_string(x) + " and " + to_string(y) + " is " + to_string(x*y);
+            break;
+        case '/':
+            return "the quotient of "s + to_string(x) + " and " + to_string(y) + " is " + to_string(x/y);
+            break;
+        default:
+            return "invalid input!";
     }
-
-    cout << "\n\nyou got it, it's " << low;
-
 }
