@@ -9,7 +9,7 @@ using namespace std;
 * convert spelled-out numbers into their digit form; e.g., the input seven gives the output 7.
 */
 
-// the other solution -- use break or continue together with cin.good() check instead of using if else
+// this is solution2 which is cleaner
 
 int main() {
 
@@ -17,24 +17,22 @@ int main() {
         "zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"
     };
 
-    auto loop = true;
-    do {
+
+    while (true) {
 
         cout << "enter number to convert to string (0 to 9 only): ";
         int temp = -1;
         cin >> temp;
 
-        if (!cin.good()) {
-            loop = false;
+        if (!cin.good()) break;
+
+        if (temp > nums.size()-1 || temp < 0) {
+            cout << "invalid input";
         } else {
-            if (temp > nums.size()-1 || temp < 0) {
-                cout << "invalid input";
-            } else {
-                cout << "that converts to " << nums[temp];
-            }
-            cout << "\n";
+            cout << "that converts to " << nums[temp];
         }
 
-    } while (loop);
+        cout << "\n";
 
+    }
 }
