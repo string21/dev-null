@@ -1,61 +1,46 @@
 #include <iostream>
-#include <algorithm>
 using namespace std;
 
 /*
-* Read a sequence of double values into a vector.
-* Think of each value as the distance between two cities along a given route.
-* Compute and print the total distance (the sum of all distances).
-* Find and print the smallest and greatest distance between two neighboring cities.
-* Find and print the mean distance between two neighboring cities.
+* Write a program to play a numbers guessing game.
+* The user thinks of a number between 1 and 100 and your program asks questions
+* to figure out what the number is (e.g., “Is the number you are thinking of less than 50?”).
+* Your program should be able to identify the number after asking no more than seven questions.
 */
 
-int main () {
-    vector<double> numbers;
+// so this is solved by using binary search, i will try to implement that in code
 
-    // get input
-    for (double temp; cin >> temp;) {
-        numbers.push_back(temp);
-    }
+int main() {
+    int low = 1;
+    int high = 100;
 
-    // print the inputs
-    for (double n : numbers) {
-        cout << n << "  ";
-    }
+    cout << "hey user, guess a number from " << low << " to " << high << ": ";
 
-    // get total distance
-    double total {};
-    for (int i = 0; i < numbers.size(); ++i) {
-        total += numbers.at(i);
-    }
-    cout << "the total is " << total << "\n\n";
 
-    vector<double> distances;
-    for (int i = 0; i < numbers.size()-1; ++i) {
-            double tempDistance {};
-            tempDistance = abs(numbers.at(i) - numbers.at(i+1));
-            distances.push_back(tempDistance);
-    }
+    int guess = {};
+    char playerInput = {};
 
-    for (double d : distances) {
-        cout << d << "  ";
-    }
-    cout << "\n\n";
+    while (low != high) {
 
-    double smallest = distances.at(0);
-    double largest = distances.at(0);
+        guess = low + (high - low) / 2;
 
-    for (int i = 0; i < distances.size(); ++i) {
-        if (distances.at(i) > largest) {
-            largest = distances.at(i);
-        }
+        cout << "\ncurrent low(" << low << ") and current high(" << high << ")";
+        cout << "\nis the number <= " << guess << "? ('y' or 'n'): ";
+        cin >> playerInput;
+        cout << "\n";
 
-        if (distances.at(i) < smallest) {
-            smallest = distances.at(i);
+        if (playerInput == 'y') {
+            cout << "you choose y";
+            high = guess;
+        } else if (playerInput == 'n') {
+            cout << "you chose n";
+            low = guess + 1;
+        } else {
+            cout << "y or n only!";
+            continue;
         }
     }
 
-    cout << "smallest is " << smallest << "\n";
-    cout << "largest is " << largest << "\n";
+    cout << "\n\nyou got it, it's " << low;
 
 }
