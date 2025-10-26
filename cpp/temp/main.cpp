@@ -1,35 +1,94 @@
+#include <algorithm>
 #include <iostream>
 #include <vector>
 using namespace std;
 
-int getMax(vector<int> numSet);
+string getMin(vector<string> list);
+string getMax(vector<string> list);
+string getMode(vector<string> unique, vector<int> modeCounter);
 
 int main() {
-    vector<int> numSet = {
-        1,2,3,4,5,6,7,8,9,9,9
+
+    vector<string> words = {
+        "xenon", "omega", "alpha", "beta", "gamma", "lambda", "sigma", "zeta", "alpha", "alpha",
+        "beta", "omega", "theta", "lambda", "lambda", "lambda", "gamma", "sigma", "zulu", "zulu", "zulu"
     };
 
-    vector<int> counter(getMax(numSet)+1, 0); // this could be improved with map but not familiar with that yet
 
-    for(int i = 0; i < numSet.size(); ++i) {
-        int temp = numSet[i];
-        counter[temp] += 1;
-    }
 
-    for(int i = 0; i < counter.size(); i++) {
-        cout << i << " = " << counter[i];
-        if (counter[i] == getMax(counter)) { // compute getmax outside loop to improve performance
-            cout << " ---->> this is our mode, we have " << counter[i] << " instances of " << i;
+    vector<string> unique = {};
+
+    for(int i = 0; i < words.size(); ++i) {
+        bool isUnique = true;
+
+        for (string u : unique) {
+            if (u == words[i]) {
+                isUnique = false;
+            }
         }
-        cout << "\n";
+
+        if (isUnique) {
+            unique.push_back(words[i]);
+        }
     }
+
+    vector<int> modeCounter(unique.size(), 0);
+
+    for (int i = 0; i < words.size(); ++i) {
+        for (int j = 0; j < unique.size(); ++j) {
+            if (unique[j] == words[i]) {
+                ++modeCounter[j];
+            }
+        }
+    }
+
+
+
+    cout << "min (alphabetically) is " << getMin(words) << "\n";
+    cout << "max (alphabetically) is " << getMax(words) << "\n";
+    cout << "mode is " << getMode(unique, modeCounter) << "\n";
+
 }
 
-int getMax(vector<int> numSet) {
-    int max = numSet[0];
-    for(int n : numSet) {
-        if (n > max) {
-            max = n;
+string getMode(vector<string> unique, vector<int> modeCounter) {
+    int max = modeCounter[0];
+    int maxIndex = 0;
+
+    // cout << "max is initialized to " << max << "\n";
+
+    for (int i = 0; i < modeCounter.size(); i++) {
+        //cout << "checking modeCounter index " << i << " -- " << modeCounter[i] << "\n";
+        if (max < modeCounter[i]) {
+            // cout << "max is being replaced..." << "\n";
+            max = modeCounter[i];
+            maxIndex = i;
+        }
+    }
+
+    // cout << "final max index is " << maxIndex << "\n";
+
+    for (int i = 0; i < modeCounter.size(); i++) {
+         // cout << unique[i] << " count is " << modeCounter[i] << "\n";
+        // if (modeCounter[i] == max) return unique[i];
+    }
+    return unique[maxIndex];
+}
+
+string getMin(vector<string> list) {
+    string min = list[0];
+    for (string l : list) {
+        if (l < min) {
+            min = l;
+        }
+    }
+    return min;
+}
+
+string getMax(vector<string> list) {
+    string max = list[0];
+    for (string l : list) {
+        if (l > max) {
+            max = l;
         }
     }
     return max;
