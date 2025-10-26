@@ -1,23 +1,38 @@
 #include <iostream>
 #include <vector>
 using namespace std;
-int main() {
-    int limit = 100;
-    vector<bool> isPrime(limit+1, true); // so we get index 0 to 100 = 101 items
-    isPrime[0] = isPrime[1] = false;
 
-    for(int i = 2; i*i <= limit; ++i) {
-        if (isPrime[i]) {
-            for(int j = i*i; j <= limit; j+=i) {
-                isPrime[j] = false;
+int main() {
+
+    cout << "enter the number of primes to print: ";
+    int count = {};
+    cin >> count;
+
+    vector<int> primes;
+
+
+    for (int i=2; primes.size() < count; ++i) {
+        bool isPrime = true;
+
+        for (int p : primes) {
+            // this is optional, no need ot check past the sqrt of i here
+            if (p*p > i) break;
+
+            if (i % p == 0) {
+                isPrime = false;
+                break;
             }
         }
+
+        if (isPrime) {
+            primes.push_back(i);
+        }
+
+
     }
 
-    for (int i = 0; i <= limit; ++i) {
-        if (isPrime[i]) {
-            cout << i << "  ";
-        }
+    for (int p : primes) {
+        cout << p << "  ";
     }
 
 }
