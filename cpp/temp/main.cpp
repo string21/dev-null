@@ -1,70 +1,31 @@
 #include <iostream>
 using namespace std;
 
-int getActualNumber(string num, vector<string> numList);
-string getOperationResult(int input1, int input2, string theOperator);
+void rewardChecker(int grainCountToCheck, vector<unsigned long long> grainPerSquare);
 
-/*
- * Modify the “mini calculator” from exercise 6 to accept (just) single-digit numbers
- * written as either digits or spelled out.
- */
+int main () {
+    vector<unsigned long long> grainPerSquare = {};
+    unsigned long long grainCount = 1;
+    constexpr short chessSquares = 64;
 
-int main() {
-
-    vector<string> numList = {
-        "zero",
-        "one",
-        "two",
-        "three",
-        "four",
-        "five",
-        "six",
-        "seven",
-        "eight",
-        "nine"
-    };
-
-    while (true) {
-        string num1 = {};
-        string num2 = {};
-        string theOperator = {};
-
-        cout << "enter two single-digit numbers (1, 2, one, two) and an operator (+ - * /), example: six 7 +    ";
-        cin >> num1 >> num2 >> theOperator;
-
-        if (!cin.good() || num1 == "exit") break;
-
-        int input1 = getActualNumber(num1, numList);
-        int input2 = getActualNumber(num2, numList);
-        if (input1 != -1 && input2 != -1) {
-            cout << getOperationResult(input1, input2, theOperator);
-        } else {
-            cout << "one of the inputs is invalid";
-        }
-        cout << "\n";
+    for (int i = 1; i <= chessSquares; ++i) {
+        grainPerSquare.push_back(grainCount);
+        grainCount*=2;
     }
+
+    rewardChecker(1000, grainPerSquare);
+    rewardChecker(1000000, grainPerSquare);
+    rewardChecker(1000000000, grainPerSquare);
 }
 
-// returns -1  if one of the numbers is invalid
-int getActualNumber(string num, vector<string> numList) {
-    for (int i = 0; i < numList.size(); ++i) {
-
-        if (num == numList[i]) {
-            return i;
+void rewardChecker(int grainCountToCheck, vector<unsigned long long> grainPerSquare) {
+    int accumulator = {};
+    for (int i = 0; i < grainPerSquare.size(); ++i) {
+        accumulator += grainPerSquare[i];
+        if (accumulator >= grainCountToCheck) {
+            cout << "it takes about " << i+1 << " squares to give the chess inventor " << grainCountToCheck << " grains of rice.\n";
+            cout << i+1 << " squares amounts to a total of " << accumulator << " grains of rice\n\n";
+            break;
         }
-
-        if (num == to_string(i)) {
-            return i;
-        }
-
     }
-    return -1;
-}
-
-string getOperationResult(int input1, int input2, string theOperator) {
-    if (theOperator == "+") return "sum is "s + to_string(input1 + input2);
-    if (theOperator == "-") return "difference is "s + to_string(input1 - input2);
-    if (theOperator == "*") return "product is "s + to_string(input1 * input2);
-    if (theOperator == "/") return "quotient is "s + to_string(input1 / input2);
-    return "invalid operator";
 }
