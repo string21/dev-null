@@ -1,29 +1,23 @@
 #include <iostream>
 #include <vector>
 using namespace std;
-
 int main() {
+    int limit = 100;
+    vector<bool> isPrime(limit+1, true); // so we get index 0 to 100 = 101 items
+    isPrime[0] = isPrime[1] = false;
 
-    vector<int> primes = {};
-
-    for(int i=2; i<=100; ++i) {
-
-        bool isPrime = true;
-
-        for(int p : primes) {
-            if(i % p == 0) { // the main logic
-                isPrime = false;
-                break;
+    for(int i = 2; i*i <= limit; ++i) {
+        if (isPrime[i]) {
+            for(int j = i*i; j <= limit; j+=i) {
+                isPrime[j] = false;
             }
         }
+    }
 
-        if (isPrime) {
-            primes.push_back(i);
+    for (int i = 0; i <= limit; ++i) {
+        if (isPrime[i]) {
+            cout << i << "  ";
         }
-
     }
 
-    for (int p : primes) {
-        cout << p << "  ";
-    }
 }
