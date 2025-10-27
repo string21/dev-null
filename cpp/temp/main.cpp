@@ -1,31 +1,90 @@
 #include <iostream>
+#include <vector>
 using namespace std;
 
-// solve quadratic equation --- use quadratic formula to find x, and then plug that into the equation to verify
-
 int main() {
-    double a = {};
-    double b = {};
-    double c = {};
+    vector<string> names;
+    vector<int> scores;
 
-    cout << "solve for the quadratic equation, provide a b and c (double values): ";
-    cin >> a >> b >> c;
-    cout << "\n";
+    while(true) {
+        string tempName;
+        int tempScore;
+        cout << "enter a name score pair (separate by space):  ";
+        cin >> tempName >> tempScore;
 
-    // so we use here the quadratic formula to find x first (two solutions for x1 and x2)
-    double x1 = (-(b) + (sqrt((pow(b, 2)) - ((4*a)*c)))) / (2*a);
-    double x2 = (-(b) - (sqrt((pow(b, 2)) - ((4*a)*c)))) / (2*a);
-    cout << "x1 is " << x1 << "\n";
-    cout << "x2 is " << x2 << "\n";
+        if(!cin.good() || (tempName == "NoName" && tempScore == 0)) break;
 
-    // this is the quadratic equation
-    //ax2 + bx + c
-    x1 = (a*(pow(x1, 2))) + (b*x1) + c;
-    x2 = (a*(pow(x2, 2))) + (b*x2) + c;
+        bool isDup = false;
+        for(string n : names) {
+            if(tempName == n) {
+                cout << "*** Error: that name already exists! ***\n";
+                isDup = true;
+            }
+        }
 
-    if (x1 == 0 && x2 == 0) {
-        cout << "valid inputs\n";
-    } else {
-        cout << "------------ >> invalid inputs aka no real roots in math\n";
+        if(isDup) break;
+
+        names.push_back(tempName);
+        scores.push_back(tempScore);
+    }
+
+    for(int i = 0; i < names.size(); ++i) {
+        cout << names[i] << "  " << scores[i] << "\n";
+        // if(i != names.size()-1) cout << "\n";
+    }
+
+    // search name feature -- return score or no name found
+
+    cout << "*** search for score by typing the name ***\n";
+    while(true) {
+        cout << "search query or 'exit' to quit:  ";
+        string query = {};
+        cin >> query;
+
+        if(!cin.good() || query == "exit") break;
+
+        bool isFound = false;
+        for(int i = 0; i < names.size(); ++i) {
+            if(query == names[i]) {
+                isFound = true;
+                cout << "----------------------------->> score for " << names[i] << " is " << scores[i] << "\n";
+                break;
+            }
+        }
+
+        if (isFound == true) {
+            break;
+        } else {
+            cout << "*** name not found ***\n";
+        }
+    }
+
+    // search score feature -- return names with that score or no score found
+
+    cout << "*** search by score ***\n";
+    while(true) {
+        cout << "enter score or 'exit' to quit:  ";
+        string query = {};
+        cin >> query;
+
+        if (!cin.good() || query == "exit") break;
+
+        vector<string> namesWithThatScore = {};
+        bool isFound = false;
+        for (int i = 0; i < names.size(); ++i) {
+            if (stoi(query) == scores[i]) {
+                isFound = true;
+                namesWithThatScore.push_back(names[i]);
+            }
+        }
+
+        if (isFound) {
+            for (string name : namesWithThatScore) {
+                cout << name << "\n";
+            }
+            break;
+        } else {
+            cout << "*** score not found ***\n";
+        }
     }
 }
