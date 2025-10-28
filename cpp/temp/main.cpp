@@ -22,9 +22,15 @@ int framed_area(int num1, int num2, int frame_number);
 void error(string msg);
 int someFunc(int x, int y, int z);
 
+class Bad_area {};
+
 int main() {
 
-    someFunc(10, 8, 5);
+    try {
+        someFunc(10, 8, 5);
+    } catch (Bad_area) {
+        cerr << "error from bad area";
+    }
 
 }
 
@@ -44,11 +50,6 @@ int someFunc(int x, int y, int z) {
     int area3 = framed_area(y,z, frame_number);
     cout << "area3 is " << area3 << "\n";
 
-    if (area1 == -1 || area2 == -1 || area3 == -1 ) {
-        error("bad area detected\n");
-        cout << "someFunc returned bad\n";
-        return -1;
-    }
     double ratio = double(area1)/area3;
     cout << "ratio is " << ratio << "\n";
     cout << "someFunc returned good\n";
@@ -56,18 +57,13 @@ int someFunc(int x, int y, int z) {
 }
 int area(int w, int h) {
     if (w <= 0 || h <= 0) {
-        cout << "bad area >> non-positive width or height\n";
-        return -1;
+        throw Bad_area{};
     }
     return w * h;
 }
 int framed_area(int w, int h, int frame_number) {
     if (w-frame_number <= 0 || h-frame_number <= 0) {
-        cout << "bad framed_area >> non-positive width or height\n";
-        return -1;
+        throw Bad_area{};
     }
     return (w-frame_number) * (h-frame_number);
-}
-void error(string msg) {
-    cerr << msg;
 }
