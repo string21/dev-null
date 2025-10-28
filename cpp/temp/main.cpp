@@ -37,7 +37,7 @@ int someFunc(int x, int y, int z) {
     cout << "area1 is " << area1 << "\n";
 
     // 1 and z here is given by the drill
-    int area2 = framed_area(1,z,frame_number);
+    int area2 = framed_area(1,z,frame_number); // so this will always fail which is what i needed to discover i guess
     cout << "area2 is " << area2 << "\n";
 
     // y and z here is given by the drill
