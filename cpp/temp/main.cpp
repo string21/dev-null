@@ -2,22 +2,29 @@
 #include <vector>
 using namespace std;
 
-class Bad_range {};
-
 int main() {
-    cout << "testing vector range error\n";
-    vector<int> nums = {
-        1,2,3,4,5
-    };
+    vector<int> someInt(4);
+
+    someInt[0] = 12;
+    someInt[1] = 62;
+    someInt[2] = 34;
+    someInt[3] = 78;
+
+
+
+
+    for (int si : someInt) {
+
+        cout << "num from loop is " << si << "\n";
+
+    }
+
+    cout << "\ntesting range " << someInt.at(8) << "\n";
 
     try {
-        for(int i=0; i<=nums.size(); ++i) {
-            if (i == nums.size())
-                throw Bad_range{};
-            cout << nums[i] << "  ";
-        }
-    } catch (Bad_range) {
-        cerr << "out of range --- testing errores";
+
+    } catch (out_of_range) {
+        cerr << "catched an out of range error.....\n";
     }
 
 }
