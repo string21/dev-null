@@ -1,35 +1,29 @@
 #include <iostream>
-#include <string>
-#include <stdexcept>
-#include <functional>
-
 using namespace std;
 
-int area(int len, int wid);
-bool validInputForAreaCheck(int len, int wid);
+// implement full try catch with user-defined expect design pattern
 
-
-void expect(function<bool()> condition, string errMsg) {
-    if (!condition)
-        throw runtime_error(errMsg);
-}
+void error(string e);
+int area(int length, int width);
+void expect(bool preconditionCheck, string eMsg);
 
 int main() {
     try {
-        cout << area(2,2);
-    } catch(runtime_error& e) {
-        cerr << e.what();
+        cout << area(0, 2);
+    } catch (runtime_error& e) {
+        cerr << "ERROR: " << e.what() << "\n";
     }
 }
 
-
-int area(int len, int wid) {
-    expect([&]{ return len > 0 && wid > 0; }, "non-positive length or width");
-    return len * wid;
+int area(int length, int width) {
+    expect(length > 0 && width > 0, "non-positive length or width...");
+    return length * width;
 }
 
-bool validInputForAreaCheck(int len, int wid) {
-    if (len > 0 && wid > 0) return true;
-    return false;
+void expect(bool preconditionCheck, string eMsg) {
+    if (!preconditionCheck) error(eMsg);
 }
 
+void error(string e) {
+    throw runtime_error {e};
+}
