@@ -16,7 +16,7 @@ void expect(Whatever preconditionCheck, string someErrorMessgae) {
 
 int main() {
     try {
-        cout << area(0, 99);
+        cout << area(2, 99);
     } catch (runtime_error& e) {
         cerr << "ERROR: " << e.what() << "\n";
     }
@@ -24,6 +24,9 @@ int main() {
 
 int area(int length, int width) {
     expect([&](){ return length > 0 && width > 0; }, "non-positive length or width...");
+
+    // intentionally added -9999 here to test the postcondition
+    expect([length, width](){ return (length * width)-9999 > 0; },"invalid area...");
     return length * width;
 }
 
