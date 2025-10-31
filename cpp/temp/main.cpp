@@ -1,37 +1,20 @@
 #include <iostream>
-using namespace std;
+#include <random>
+#include <chrono>
 
-// implement full try catch with user-defined expect design pattern
-// this time using the template plus lambda
-// i dont fully understand template and lamdas .. just testing if i can do this
-
-void error(string e);
-int area(int length, int width);
-template<typename Whatever>
-void expect(Whatever preconditionCheck, string someErrorMessgae) {
-    if (!preconditionCheck()) error(someErrorMessgae);
-}
-
-
+int random_int(int min, int max);
 
 int main() {
-    try {
-        cout << area(2, 99);
-    } catch (runtime_error& e) {
-        cerr << "ERROR: " << e.what() << "\n";
-    }
+    random_int(1, 6);
 }
 
-int area(int length, int width) {
-    expect([&](){ return length > 0 && width > 0; }, "non-positive length or width...");
+int random_int(int min, int max) {
 
-    // intentionally added -9999 here to test the postcondition
-    expect([length, width](){ return (length * width)-9999 > 0; },"invalid area...");
-    return length * width;
+    static unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+    static std::default_random_engine theEngine(seed);
+    std::uniform_int_distribution<int> someDist(min,max);
+
+    std::cout << someDist(theEngine);
+
+    return 0;
 }
-
-
-void error(string e) {
-    throw runtime_error {e};
-}
-
