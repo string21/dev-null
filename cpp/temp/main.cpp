@@ -1,61 +1,77 @@
 #include <iostream>
 using namespace std;
 
-double ctok(double c);
-double ktoc(double k);
-void error(string errorMessage);
-void expect(bool precondition, string errorMessage);
+// Formulas:
+// Celsius to Fahrenheit: $F = (C \times \frac{9}{5}) + 32$
+// Fahrenheit to Celsius: $C = (F - 32) \times \frac{5}{9}$
+
+// ill make sure to break things into smaller functions and try to handle all legal and illegal inputs
+
+void printMenu();
+short getUserMenuChoice();
+void processChoice(short choice);
+void expect (bool validityCheck, string e);
+void error(string e);
 
 int main() {
     try {
-
-        cout << "select one of the following: \n";
-        cout << "1. convert celsius to kelvin\n";
-        cout << "2. convert kelvin to celsius\n";
-        cout << "enter your choice:  ";
-        int userChoice = 0;
-        cin >> userChoice;
-
-        if (userChoice == 1) {
-            cout << "enter temp in celsius to covert to kelvin:  ";
-            double c = 0;
-            cin >> c;
-            double k = ctok(c);
-            cout << k << " Kelvin\n";
-        } else if (userChoice == 2) {
-            cout << "enter temp in kelvin to covert to ceosius:  ";
-            double k = 0;
-            cin >> k;
-            double c = ktoc(k);
-            cout << c << " Celsius\n";
-        } else {
-            error("Not a valid choice...");
-        }
-
-
+        printMenu();
+        short choice = getUserMenuChoice();
+        processChoice(choice);
     } catch (runtime_error& e) {
-        cerr << "ERROR: " << e.what();
+        cerr << "ERROR:  " << e.what();
     } catch (...) {
-        cerr << "ERROR: Unknown exception has been spotted...";
+        cout << "Opps...... unknown error!";
     }
 }
 
-double ctok(double c) { // converts Celsius to Kelvin
-    expect(c >= -273.25, "bad arg for function ... celsius value should be greater than or equal to -273.25!");
-    double k = c + 273.25;
-    return k;
+int getTemperature() {
+    cout << "enter the temperature: ";
+    int temp = 0;
+    cin >> temp;
+    expect(cin.good(), "invalid temperature value...");
+    return temp;
 }
 
-double ktoc(double k) { // converts Kelvin to Celsius
-    expect(k >= 0, "bad arg for function ... kelvin value should be greater equal to 0 (zero)!");
-    double c = k - 273.25;
-    return c;
+void print_c_to_fahrenheit(double temp) {
+    cout << ((temp * 9) / 5) + 32;
 }
 
-void error(string errorMessage) {
-    throw runtime_error{errorMessage};
+void print_f_to_celsius(double temp) {
+    cout << ((temp - 32) * 5)/9;
 }
 
-void expect(bool precondition, string errorMessage) {
-    if (!precondition) error(errorMessage);
+void processChoice(short choice) {
+    int temperature = getTemperature();
+    switch (choice) {
+        case 1:
+            print_c_to_fahrenheit(temperature);
+            break;
+        case 2:
+            print_f_to_celsius(temperature);
+            break;
+    }
+}
+
+short getUserMenuChoice() {
+    short choice = 0;
+    cin >> choice;
+    expect(cin.good() && choice >= 1 && choice <= 2, "invalid user choice...");
+    return choice;
+}
+
+void printMenu() {
+    cout << "\n*** choose what you want to do today ***\n"
+         << "1. convert to fahrenheit \n"
+         << "2. convert to celsius \n"
+         << "enter your choice:  ";
+}
+
+void error(string e) {
+    throw runtime_error {e};
+}
+
+void expect (bool validityCheck, string e) {
+    // test if the function argument(s) are any good
+    if (!validityCheck) error(e);
 }
