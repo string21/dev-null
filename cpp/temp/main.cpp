@@ -5,24 +5,23 @@
 #include <exception>
 #include <stdexcept>
 
-// key takeaway.... loop is like a good place to try and catch errors so it does not interrupt the user journey..
-// just make sure to handle the exception you encounter there within the loop gracefully
-// and dont terminate if it makes sense that the program must continue -- if that makes sense....
-// oh... so it's actually called recoverable errors?!
+// modded to find adjacent diffs
+// i did find and replace to change most ints to double..
+// i must have converted some that need to stay int like iterators and stuff
 
 void print_welcome_message();
-short get_n_to_add();
-std::vector<int> get_numbers();
-void processResult(short n, std::vector<int> numbers);
+int get_n_to_add();
+std::vector<double> get_numbers();
+void processResult(int n, std::vector<double> numbers);
 void error(std::string e);
 void expect(bool checkExpectation, std::string e);
 
 int main() {
     try {
         print_welcome_message();
-        std::cout << "enter the number of integers you want to add:  ";
-        short n = get_n_to_add();
-        std::vector<int> numbers = get_numbers();
+        std::cout << "enter the number of double number values you want to add:  ";
+        int n = get_n_to_add();
+        std::vector<double> numbers = get_numbers();
         processResult(n, numbers);
     } catch (std::runtime_error& e) {
         std::cerr << "runtime: " << e.what();
@@ -33,21 +32,36 @@ int main() {
     }
 }
 
-void processResult(short n, std::vector<int> numbers) {
+// bigger function just to complete the exercise....
+void processResult(int n, std::vector<double> numbers) {
     expect(numbers.size() >= n,"not enough numbers were entered");
-    int sum = 0;
+    double sum = 0.0;
+    std::vector<double> diffs;
+    for (int i = 0; i < n; ++i) {
+        sum+=numbers[i];
+        if (i < n-1)
+            diffs.push_back(numbers[i+1] - numbers[i]);
+    }
+
+    std::cout << "\nthe target numbers:  ";
     for (int i = 0; i < n; ++i) {
         std::cout << numbers[i] << "  ";
-        // this only handles the if numbers[i] is a positive number ... underflow is not considered here..
-        expect(numbers[i] <= std::numeric_limits<int>::max() - sum, "integer overflow");
-        sum+=numbers[i];
     }
+
     std::cout << "\nsum is " << sum;
+
+    std::cout << "\ndiffs are:  ";
+    for (double d : diffs) {
+        std::cout << d << "  ";
+    }
+
+
+
 }
 
-std::vector<int> get_numbers() {
-    std::cout << "start entering the int numbers, enter '|' to stop...\n";
-    std::vector<int> numbers;
+std::vector<double> get_numbers() {
+    std::cout << "start entering the double numbers, enter '|' to stop...\n";
+    std::vector<double> numbers;
     std::string temp = {};
     while (true) {
         std::cin >> temp;
@@ -55,7 +69,7 @@ std::vector<int> get_numbers() {
         if (temp == "|")
             break;
         try {
-            numbers.push_back(std::stoi(temp));
+            numbers.push_back(std::stod(temp));
         } catch (std::invalid_argument& e) {
             std::cerr << "INSIDE LOOP INVALID ARG ERROR: " << e.what() << "\n";
         }
@@ -63,8 +77,8 @@ std::vector<int> get_numbers() {
     return numbers;
 }
 
-short get_n_to_add() {
-    short n = 0;
+int get_n_to_add() {
+    int n = 0;
     std::cin >> n;
     expect(std::cin.good(), "input operation failed...");
     expect(n > 0, "variable 'n' must be greater than zero...");
@@ -72,7 +86,7 @@ short get_n_to_add() {
 }
 
 void print_welcome_message() {
-    std::cout << "let's add some integers, shall we?\n";
+    std::cout << "let's add some doubles, shall we?\n";
 }
 
 void error(std::string e) {
