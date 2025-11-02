@@ -1,67 +1,84 @@
 #include <iostream>
-#include <cmath>
 #include <vector>
+#include <limits>
+#include <string>
 #include <exception>
+#include <stdexcept>
 
-// ill start using std:: instead of relying on "using namespace std" to avoid polluting the global namespace
+// key takeaway.... loop is like a good place to try and catch errors so it does not interrupt the user journey..
+// just make sure to handle the exception you encounter there within the loop gracefully
+// and dont terminate if it makes sense that the program must continue -- if that makes sense....
+// oh... so it's actually called recoverable errors?!
 
-// quad formulas:
-    // x1 = (-b + sqrt(b*b - 4*a*c)) / (2*a);
-    // x2 = (-b - sqrt(b*b - 4*a*c)) / (2*a);
-// quad equation: (a * x * x) + (b * x) + c
-
-void welcomeMsg();
-std::vector<double> getUserInputs();
-void printResult(std::vector<double> inputs);
-void expect(bool pre_or_postcondition, std::string e);
+void print_welcome_message();
+short get_n_to_add();
+std::vector<int> get_numbers();
+void processResult(short n, std::vector<int> numbers);
 void error(std::string e);
+void expect(bool checkExpectation, std::string e);
 
-int main () {
+int main() {
     try {
-        welcomeMsg();
-        std::vector<double> inputs = getUserInputs();
-        printResult(inputs);
-    } catch (std::exception& e) { // catch all types of exceptions, not just runtime_error
-        std::cerr << "ERROR: " << e.what();
+        print_welcome_message();
+        std::cout << "enter the number of integers you want to add:  ";
+        short n = get_n_to_add();
+        std::vector<int> numbers = get_numbers();
+        processResult(n, numbers);
+    } catch (std::runtime_error& e) {
+        std::cerr << "runtime: " << e.what();
+    } catch (std::exception& e) {
+        std::cerr << "exception: " << e.what();
     } catch (...) {
-        std::cerr << "Oppps... Unknown Error Found";
+        std::cerr << "Oppppps..... Unknown error";
     }
 }
 
-void welcomeMsg() {
-    std::cout << "\nlet's solve some quadratic equations!\n"
-              << "please supply us with variables a, b and c to start.\n"
-              << "type them now and make sure to separate them using space:  ";
+void processResult(short n, std::vector<int> numbers) {
+    expect(numbers.size() >= n,"not enough numbers were entered");
+    int sum = 0;
+    for (int i = 0; i < n; ++i) {
+        std::cout << numbers[i] << "  ";
+        // this only handles the if numbers[i] is a positive number ... underflow is not considered here..
+        expect(numbers[i] <= std::numeric_limits<int>::max() - sum, "integer overflow");
+        sum+=numbers[i];
+    }
+    std::cout << "\nsum is " << sum;
 }
 
-std::vector<double> getUserInputs() {
-    double a, b, c = {};
-    std::cin >> a >> b >> c;
-    expect(std::cin.good(), "Invalid User Input");
-    return {a, b, c};
+std::vector<int> get_numbers() {
+    std::cout << "start entering the int numbers, enter '|' to stop...\n";
+    std::vector<int> numbers;
+    std::string temp = {};
+    while (true) {
+        std::cin >> temp;
+        expect(std::cin.good(), "input operation failed...");
+        if (temp == "|")
+            break;
+        try {
+            numbers.push_back(std::stoi(temp));
+        } catch (std::invalid_argument& e) {
+            std::cerr << "INSIDE LOOP INVALID ARG ERROR: " << e.what() << "\n";
+        }
+    }
+    return numbers;
 }
 
-// this is a bigger function just to finish this...
-void printResult(std::vector<double> inputs) {
-    double a = inputs[0];
-    double b = inputs[1];
-    double c = inputs[2];
-
-    expect((b*b - 4*a*c) > 0, "MATH: No Real Roots");
-    double x1 = (-b + std::sqrt(b*b - 4*a*c)) / (2*a);
-    double x2 = (-b - std::sqrt(b*b - 4*a*c)) / (2*a);
-
-    double verify_x1 = (a * x1 * x1) + (b * x1) + c;
-    double verify_x2 = (a * x2 * x2) + (b * x2) + c;
-
-    std::cout << "x1 is " << x1 << ", plugged into the quadratic equation: " << verify_x1 << "\n"
-              << "x2 is " << x2 << ", plugged into the quadratic equation: " << verify_x2 << "\n";
+short get_n_to_add() {
+    short n = 0;
+    std::cin >> n;
+    expect(std::cin.good(), "input operation failed...");
+    expect(n > 0, "variable 'n' must be greater than zero...");
+    return n;
 }
 
-void expect(bool pre_or_postcondition, std::string e) {
-    if (!pre_or_postcondition) error(e);
+void print_welcome_message() {
+    std::cout << "let's add some integers, shall we?\n";
 }
 
 void error(std::string e) {
-    throw std::runtime_error {e};
+    throw std::runtime_error(e);
+}
+
+void expect(bool checkExpectation, std::string e) {
+    if (!checkExpectation) error(e);
 }
