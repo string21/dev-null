@@ -1,48 +1,56 @@
 #include <iostream>
+using namespace std;
 
-void error(std::string e) {
-    throw std::runtime_error {e};
+void error(string e) {
+    throw runtime_error {e};
 }
 
-int main() {
-    std::cout << "enter an expression, we can handle + - * /\n"
-              << "end the expression with x (e.g., 1 + 2 * 3 x)    <--- separate by space\n";
+int main()
+{
+    cout << "Please enter expression (we can handle +, −,  *, and /\n";
+    cout << "add an x to end expression (e.g., 1+2*3x): ";
+    int lval = 0;
+    int rval = 0;
+    cin>>lval; // read left-most operand
+    if (!cin)
+        error("no first operand");
 
-    double lvalue = 0;
-    double rvalue = 0;
-    std::cin >> lvalue;
-    if (!std::cin)
-        error("no left value operand");
-
-    for (char the_operator {}; std::cin >> the_operator;) {
-        std::cout << "operator is " << the_operator << "\n";
-
-        if (the_operator != 'x') {
-            std::cout << "operator is not x, so i need a right value... " << "\n";
-            std::cin >> rvalue;
-        }
-        std::cout << "value of rvalue is " << rvalue << " before a cin test!\h";
-        if (!std::cin) {
-            error("no right value operand");
+    for (char op; cin>>op;) { // read operator and right-hand op
+        cout << "operator captured is " << op << "\n";
+        if (op!='x')
+            cin>>rval;
+        else {
+            cout << "we received the x request, show the result...";
         }
 
-        switch (the_operator) {
-            case '+':
-                lvalue += rvalue;
-                break;
-            case '-':
-                lvalue -= rvalue;
-                break;
-            case '*':
-                lvalue *= rvalue;
-                break;
-            case '/':
-                lvalue /= rvalue;
-                break;
-            default:
-                std::cout << "result is " << lvalue;
-                return 0;
-        }//switch
-    }//for
-    error("bad expression"); // means we did not reach return 0
-}//main
+        if (cin.good()) cout << "cin is good\n";
+        if (!cin.good()) cout << "cin is bad\n";
+
+        if (!cin)
+            error("no second operand");
+
+        if (op == 'x') {
+            cout << "Result: " << lval << '\n';
+            return 0;
+        } else {
+            switch(op){
+                case '+':
+                    lval += rval; // add: lval = lval + rval
+                    break;
+                case '-':
+                    lval -= rval; // subtract: lval = lval - rval
+                    break;
+                case '*':
+                    lval  *= rval; // multiply: lval = lval * rval
+                    break;
+                case '/':
+                    lval /= rval; // divide: lval = lval / rval
+                    break;
+                default:
+                    error("invalid op\n");
+
+            }
+        }
+    }
+    error("bad expression");
+}
