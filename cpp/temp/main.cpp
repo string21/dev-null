@@ -103,10 +103,29 @@ int main() {
         }
     }
 
+    // std::cout << "my tokens ==============\n";
+    // for (Token t : my_toks) {
+    //     t.print_token();
+    // }
+
     std::cout << "final output ==============\n";
-    for (Token t : my_toks) {
-        t.print_token();
+    double result {};
+    bool isFirstOperation = true;
+    for (int i=0; i < my_toks.size(); ++i) {
+        if (isFirstOperation) {
+            if (my_toks[i].kind == '+') {
+                isFirstOperation = false;
+                result = my_toks[i-1].value + my_toks[i+1].value;
+            }
+        } else {
+            if (my_toks[i].kind == '+') {
+                result = result + my_toks[i+1].value;
+            }
+        }
     }
+
+    std::cout << "result is " << result;
+
 }
 
 
