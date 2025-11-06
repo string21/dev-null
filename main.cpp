@@ -104,7 +104,7 @@ int main() {
     }
 
     // std::cout << "my tokens ==============\n";
-    // for (Token t : my_toks) {
+    // for (Token t : my_toks) {∏
     //     t.print_token();
     // }
 
@@ -124,7 +124,7 @@ int main() {
         }
     }
 
-    std::cout << "result is " << result;
+    std::cout << "result is " << result << std::endl;
 
 }
 
