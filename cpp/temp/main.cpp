@@ -1,38 +1,81 @@
 #include <iostream>
 
-// im trying to learn class real quick so i can understand this token concept being presented by bjarn
-
-class Car {
+class Token {
 public:
-    std::string make;
-    std::string model;
+    char kind;
+    double value;
+    Token(){};
+    Token(char k):kind{k},value{0.0}{};
+    Token(char k, double y):kind{k},value{y}{};
 
-    Car(){}
-    Car(std::string m): make{m}, model{"1 param test"}{}
-    Car(std::string m, std::string m2): make{m}, model{m2} {
-        if (make == "Honda")
-            make = "Honda for real tho?";
-    }
-
-
-    void printCar() {
-        std::cout << "Make: " << make << "\n";
-        std::cout << "Model: " << model << "\n";
+    void print_token() {
+        std::cout << "kind is " << kind << " value is " << value << std::endl;
     }
 };
 
-int main () {
+void print(std::string s) {
+    std::cout << "\n" << s << "\n";
+}
 
-    Car someCar;
-    someCar.make = "Honda";
-    someCar.model = "Civic";
-    std::cout << "My car is not a " << someCar.make << " " << someCar.model << std::endl;
-    someCar.printCar();
 
-    Car car1param("Ford");
-    car1param.printCar();
+Token get_token() {
 
-    Car carWithTwoParams("Honda", "Accord");
-    carWithTwoParams.printCar();
+    std::string buildNum {};
+
+    while (true) {
+        Token t;
+        char input;
+        std::cin >> input;
+        switch (input) {
+            case '+':
+                t.kind = '+';
+                break;
+            case '-':
+                t.kind = '-';
+                break;
+            case '*':
+                t.kind = '*';
+                break;
+            case '/':
+                t.kind = '/';
+                break;
+            case '0':
+                t.kind = '8';
+                break;
+            case '1':
+                t.kind = '8';
+                break;
+            case '2':
+                t.kind = '8';
+                break;
+            default:
+                t.kind = 'x';
+        }
+
+        if (t.kind == '8') {
+            std::cout << "type is " << t.kind << std::endl;
+            buildNum += input;
+            std::cout << "built num is " << buildNum << std::endl;
+        } else {
+            std::cout << "type is " << t.kind << std::endl;
+            return t;
+        }
+
+
+
+    }
+
+}
+
+int main() {
+
+
+    while (std::cin) {
+        Token test = get_token();
+        test.print_token();
+    }
+
+
+
 
 }
