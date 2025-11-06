@@ -82,10 +82,14 @@ Token get_token() {
 }
 
 int main() {
+    std::cout << std::endl;
+    std::cout << std::endl;
+
     std::string build_number {};
     std::vector<Token> my_toks;
 
     while (std::cin) {
+        
         Token temp = get_token();
 
         if (temp.kind != '8' && build_number.length() > 0) {
@@ -123,9 +127,8 @@ int main() {
             }
         }
     }
-
     std::cout << "result is " << result << std::endl;
-
+    std::cout << "\n";
 }
 
 
