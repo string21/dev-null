@@ -1,4 +1,5 @@
 #include <iostream>
+#include <iomanip>
 
 class Token {
 public:
@@ -185,8 +186,6 @@ int main() {
                     res = my_toks[left].value - my_toks[right].value;
                 }
 
-                std::cout << "printin result inside 2nd loop " << res << "\n";
-
                 new_toks.pop_back();
                 Token temp('8', res);
                 new_toks.push_back(temp);
@@ -204,6 +203,7 @@ int main() {
     std::cout << "final value " << my_toks[my_toks.size()-1].value << "\n";
 
 
+    std::cout << std::fixed << std::setprecision(2);
     for (Token t : my_toks) {
         std::cout << t.value << ", ";
     }
