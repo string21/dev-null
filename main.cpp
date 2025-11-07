@@ -4,9 +4,11 @@ class Token {
 public:
     char kind;
     double value;
+    int resultIndex = -1;
+    bool isMerged = false;
 
     Token(){};
-    Token(char k, double y):kind{k},value{y}{};
+    Token(char k, double v) : kind{k}, value{v}{};
 
     void print_token() {
         std::cout << "kind is " << kind << " value is " << value << std::endl;
@@ -17,7 +19,7 @@ void print(std::string s) {
     std::cout << "\n" << s << "\n";
 }
 
-
+// noob reminder that this is a normal function with return type of Token
 Token get_token() {
     Token t;
     char input;
@@ -107,28 +109,160 @@ int main() {
         }
     }
 
-    // std::cout << "my tokens ==============\n";
-    // for (Token t : my_toks) {∏
-    //     t.print_token();
-    // }
-
     std::cout << "final output ==============\n";
-    double result {};
-    bool isFirstOperation = true;
-    for (int i=0; i < my_toks.size(); ++i) {
-        if (isFirstOperation) {
-            if (my_toks[i].kind == '+') {
-                isFirstOperation = false;
-                result = my_toks[i-1].value + my_toks[i+1].value;
+
+    std::vector<double> results;
+    int index {0};
+
+    // loop * and /
+    double lval {};
+    double rval {};
+
+    for (int i = 0; i < my_toks.size(); ++i) {
+        if (my_toks[i].isMerged == false && (my_toks[i].kind == '*' || my_toks[i].kind == '/')) {
+            
+            // std::cout << "we are doing " << my_toks[i].kind << "\n";
+
+            int left = i-1;
+            int right = i+1;
+
+            //check left
+            if (my_toks[left].isMerged) {
+                lval = results[my_toks[left].resultIndex];
+            } else {
+                lval = my_toks[left].value;
             }
-        } else {
-            if (my_toks[i].kind == '+') {
-                result = result + my_toks[i+1].value;
+            
+            //check right
+            if (my_toks[right].isMerged) {
+                rval = results[my_toks[right].resultIndex];
+            } else {
+                rval = my_toks[right].value;
             }
+
+            if (my_toks[left].resultIndex != -1) {
+                for (Token& m : my_toks) {
+                    if (m.resultIndex == my_toks[left].resultIndex) {
+                        m.resultIndex = index;
+                        m.isMerged = true;
+                    }
+                }
+            }
+
+            if (my_toks[right].resultIndex != -1) {
+                for (Token& m : my_toks) {
+                    if (m.resultIndex == my_toks[right].resultIndex) {
+                        m.resultIndex = index;
+                        m.isMerged = true;
+                    }
+                }
+            }
+
+            // update index
+            my_toks[left].resultIndex = index;
+            my_toks[i].resultIndex = index;
+            my_toks[right].resultIndex = index;
+            my_toks[left].isMerged = true;
+            my_toks[i].isMerged = true;
+            my_toks[right].isMerged = true;
+
+            if (my_toks[i].kind == '*' ) {
+                std::cout << lval*rval << "\n";
+                results.push_back(lval*rval);
+                lval = lval*rval;
+            }
+
+            if (my_toks[i].kind == '/' ) {
+                std::cout << lval/rval << "\n";
+                results.push_back(lval/rval);
+                lval = lval/rval;
+            }
+            
+            index += 1;
+ 
         }
     }
-    std::cout << "result is " << result << std::endl;
-    std::cout << "\n";
+
+    
+    for (double r : results) {
+        std::cout << r << " ";
+    } std::cout << "\n";
+    
+
+    for (int i = 0; i < my_toks.size(); ++i) {
+        if (my_toks[i].isMerged == false && (my_toks[i].kind == '+' || my_toks[i].kind == '-')) {
+            
+            // std::cout << "we are doing " << my_toks[i].kind << "\n";
+
+            int left = i-1;
+            int right = i+1;
+
+            //check left
+            if (my_toks[left].isMerged) {
+                lval = results[my_toks[left].resultIndex];
+            } else {
+                lval = my_toks[left].value;
+            }
+            
+            //check right
+            if (my_toks[right].isMerged) {
+                rval = results[my_toks[right].resultIndex];
+            } else {
+                rval = my_toks[right].value;
+            }
+
+            if (my_toks[left].resultIndex != -1) {
+                for (Token& m : my_toks) {
+                    if (m.resultIndex == my_toks[left].resultIndex) {
+                        m.resultIndex = index;
+                        m.isMerged = true;
+                    }
+                }
+            }
+
+            if (my_toks[right].resultIndex != -1) {
+                for (Token& m : my_toks) {
+                    if (m.resultIndex == my_toks[right].resultIndex) {
+                        m.resultIndex = index;
+                        m.isMerged = true;
+                    }
+                }
+            }
+
+            // update index
+            my_toks[left].resultIndex = index;
+            my_toks[i].resultIndex = index;
+            my_toks[right].resultIndex = index;
+            my_toks[left].isMerged = true;
+            my_toks[i].isMerged = true;
+            my_toks[right].isMerged = true;
+
+            if (my_toks[i].kind == '+' ) {
+                std::cout << lval+rval << "\n";
+                results.push_back(lval+rval);
+                lval = lval+rval;
+            }
+
+            if (my_toks[i].kind == '-' ) {
+                std::cout << lval-rval << "\n";
+                results.push_back(lval-rval);
+                lval = lval-rval;
+            }
+
+            index += 1;
+ 
+        }
+    }
+
+
+    std::cout << "test here end >> " << results[results.size()-1] << "\n\n";
+
+    for (double r : results) {
+        std::cout << r << " ";
+    } std::cout << "\n";
+
+    std::cout << std::endl;
+    std::cout << std::endl;
 }
 
 
