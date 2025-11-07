@@ -84,9 +84,6 @@ Token get_token() {
 }
 
 int main() {
-    std::cout << std::endl;
-    std::cout << std::endl;
-
     std::string build_number {};
     std::vector<Token> my_toks;
 
@@ -109,160 +106,106 @@ int main() {
         }
     }
 
-    std::cout << "final output ==============\n";
-
-    std::vector<double> results;
-    int index {0};
-
-    // loop * and /
-    double lval {};
-    double rval {};
-
-    for (int i = 0; i < my_toks.size(); ++i) {
-        if (my_toks[i].isMerged == false && (my_toks[i].kind == '*' || my_toks[i].kind == '/')) {
-            
-            // std::cout << "we are doing " << my_toks[i].kind << "\n";
-
-            int left = i-1;
-            int right = i+1;
-
-            //check left
-            if (my_toks[left].isMerged) {
-                lval = results[my_toks[left].resultIndex];
-            } else {
-                lval = my_toks[left].value;
-            }
-            
-            //check right
-            if (my_toks[right].isMerged) {
-                rval = results[my_toks[right].resultIndex];
-            } else {
-                rval = my_toks[right].value;
-            }
-
-            if (my_toks[left].resultIndex != -1) {
-                for (Token& m : my_toks) {
-                    if (m.resultIndex == my_toks[left].resultIndex) {
-                        m.resultIndex = index;
-                        m.isMerged = true;
-                    }
-                }
-            }
-
-            if (my_toks[right].resultIndex != -1) {
-                for (Token& m : my_toks) {
-                    if (m.resultIndex == my_toks[right].resultIndex) {
-                        m.resultIndex = index;
-                        m.isMerged = true;
-                    }
-                }
-            }
-
-            // update index
-            my_toks[left].resultIndex = index;
-            my_toks[i].resultIndex = index;
-            my_toks[right].resultIndex = index;
-            my_toks[left].isMerged = true;
-            my_toks[i].isMerged = true;
-            my_toks[right].isMerged = true;
-
-            if (my_toks[i].kind == '*' ) {
-                std::cout << lval*rval << "\n";
-                results.push_back(lval*rval);
-                lval = lval*rval;
-            }
-
-            if (my_toks[i].kind == '/' ) {
-                std::cout << lval/rval << "\n";
-                results.push_back(lval/rval);
-                lval = lval/rval;
-            }
-            
-            index += 1;
- 
-        }
-    }
-
-    
-    for (double r : results) {
-        std::cout << r << " ";
-    } std::cout << "\n";
-    
-
-    for (int i = 0; i < my_toks.size(); ++i) {
-        if (my_toks[i].isMerged == false && (my_toks[i].kind == '+' || my_toks[i].kind == '-')) {
-            
-            // std::cout << "we are doing " << my_toks[i].kind << "\n";
-
-            int left = i-1;
-            int right = i+1;
-
-            //check left
-            if (my_toks[left].isMerged) {
-                lval = results[my_toks[left].resultIndex];
-            } else {
-                lval = my_toks[left].value;
-            }
-            
-            //check right
-            if (my_toks[right].isMerged) {
-                rval = results[my_toks[right].resultIndex];
-            } else {
-                rval = my_toks[right].value;
-            }
-
-            if (my_toks[left].resultIndex != -1) {
-                for (Token& m : my_toks) {
-                    if (m.resultIndex == my_toks[left].resultIndex) {
-                        m.resultIndex = index;
-                        m.isMerged = true;
-                    }
-                }
-            }
-
-            if (my_toks[right].resultIndex != -1) {
-                for (Token& m : my_toks) {
-                    if (m.resultIndex == my_toks[right].resultIndex) {
-                        m.resultIndex = index;
-                        m.isMerged = true;
-                    }
-                }
-            }
-
-            // update index
-            my_toks[left].resultIndex = index;
-            my_toks[i].resultIndex = index;
-            my_toks[right].resultIndex = index;
-            my_toks[left].isMerged = true;
-            my_toks[i].isMerged = true;
-            my_toks[right].isMerged = true;
-
-            if (my_toks[i].kind == '+' ) {
-                std::cout << lval+rval << "\n";
-                results.push_back(lval+rval);
-                lval = lval+rval;
-            }
-
-            if (my_toks[i].kind == '-' ) {
-                std::cout << lval-rval << "\n";
-                results.push_back(lval-rval);
-                lval = lval-rval;
-            }
-
-            index += 1;
- 
+    for (Token t : my_toks) {
+        if (t.kind != '8') {
+            std::cout << t.kind;
+        } else {
+            std::cout << t.value;
         }
     }
 
 
-    std::cout << "test here end >> " << results[results.size()-1] << "\n\n";
+    // get the number of * and / in my_toks
+    int multi_div_count {0};
 
-    for (double r : results) {
-        std::cout << r << " ";
-    } std::cout << "\n";
+    for (Token t : my_toks) {
+        if (t.kind == '*' || t.kind == '/') {
+            ++multi_div_count;
+        }
+    }
 
-    std::cout << std::endl;
-    std::cout << std::endl;
+    std::cout << "\nthere are " << multi_div_count << "* and / in the given equation...\n";
+
+
+    std::cout << "\n\nfinal output ==============\n\n";
+
+    for (int i = 1; i <= multi_div_count; ++i) {
+        double res {};
+        std::vector<Token> new_toks;
+
+        bool completed_one_pass = false;
+        for (int i = 0; i < my_toks.size(); ++i) {
+            if (!completed_one_pass && (my_toks[i].kind == '*' || my_toks[i].kind == '/')) {
+                completed_one_pass = true;
+                int left = i-1;
+                int right = i+1;
+
+                if (my_toks[i].kind == '*') {
+                    res = my_toks[left].value * my_toks[right].value;
+                } else if (my_toks[i].kind == '/') {
+                    res = my_toks[left].value / my_toks[right].value;
+                }
+
+                new_toks.pop_back();
+                Token temp('8', res);
+                new_toks.push_back(temp);
+                i+=2;
+            }
+            new_toks.push_back(my_toks[i]);
+        }    
+        my_toks = new_toks;
+    }
+
+     // get the number of * and / in my_toks
+    int add_sub_count {0};
+
+    for (Token t : my_toks) {
+        if (t.kind == '+' || t.kind == '-') {
+            ++add_sub_count;
+        }
+    }
+
+    std::cout << "\nthere are " <<  add_sub_count << "+ and - in the given equation...\n";
+
+
+    for (int i = 1; i <= add_sub_count; ++i) {
+        double res {};
+        std::vector<Token> new_toks;
+
+        bool completed_one_pass = false;
+        for (int i = 0; i < my_toks.size(); ++i) {
+            if (!completed_one_pass && (my_toks[i].kind == '+' || my_toks[i].kind == '-')) {
+                completed_one_pass = true;
+                int left = i-1;
+                int right = i+1;
+
+                if (my_toks[i].kind == '+') {
+                    res = my_toks[left].value + my_toks[right].value;
+                } else if (my_toks[i].kind == '-') {
+                    res = my_toks[left].value - my_toks[right].value;
+                }
+
+                std::cout << "printin result inside 2nd loop " << res << "\n";
+
+                new_toks.pop_back();
+                Token temp('8', res);
+                new_toks.push_back(temp);
+                i+=2;
+            }
+            new_toks.push_back(my_toks[i]);
+        }    
+        my_toks = new_toks;
+    }
+
+    //pop 1 last extra
+    my_toks.pop_back();
+
+    std::cout << "size of the final my_toks is " << my_toks.size() << "\n";
+    std::cout << "final value " << my_toks[my_toks.size()-1].value << "\n";
+
+
+    for (Token t : my_toks) {
+        std::cout << t.value << ", ";
+    }
+
 }
-
-
