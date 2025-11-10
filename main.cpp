@@ -1,202 +1,165 @@
+/*
+    This is the first version of the calculator from Chapter 5.
+    It is the version referred to as calculator00.cpp in section 5.6.
+    It correctly handles precedence but has a bug where it "eats"
+    tokens that it doesn't use, leading to strange behavior.
+*/
+
 #include <iostream>
+#include <string>
+#include <vector>
+#include <stdexcept>
+#include <cmath>
+
+// Use std:: for all standard library components
 using namespace std;
 
-// im trying to run calculator00.cpp from github
-// so here i manually added the error function because i dont know how to load this std_lib_facilities.h -- im getting an error 
+// ------------------------------------------------------------------
+// Error function (from Chapter 4.6.3)
+// ------------------------------------------------------------------
 
-void error(string s) {
+void error(string s)
+{
     throw runtime_error(s);
 }
 
-
-//
-// This is example code from Chapter 7.2 "Input and output" of
-// "Programming -- Principles and Practice Using C++" by Bjarne Stroustrup
-//
-
-// #include "../std_lib_facilities.h"
-
-//------------------------------------------------------------------------------
+// ------------------------------------------------------------------
+// Token class (from Chapter 5.3.3)
+// ------------------------------------------------------------------
 
 class Token {
 public:
-    char kind;        // what kind of token
-    double value;     // for numbers: a value
-    Token(char ch)    // make a Token from a char
-        :kind(ch), value(0) { }
-    Token(char ch, double val)     // make a Token from a char and a double
-        :kind(ch), value(val) { }
+  char kind;
+  double value;
+  
+  Token(char k) :kind{k}, value{0.0}{}
+  Token(char k, double v) :kind{k}, value{v}{}
 };
 
-//------------------------------------------------------------------------------
+// ------------------------------------------------------------------
+// get_token() function (deduced from Chapter 5.8.2)
+// This is the standalone version *before* Token_stream
+// ------------------------------------------------------------------
 
-class Token_stream {
-public:
-    Token_stream();   // make a Token_stream that reads from cin
-    Token get();      // get a Token (get() is defined elsewhere)
-    void putback(Token t);    // put a Token back
-private:
-    bool full;        // is there a Token in the buffer?
-    Token buffer;     // here is where we keep a Token put back using putback()
-};
-
-//------------------------------------------------------------------------------
-
-// The constructor just sets full to indicate that the buffer is empty:
-Token_stream::Token_stream()
-:full(false), buffer(0)    // no Token in buffer
+Token get_token()
 {
+  char ch;
+  cin >> ch; // note that >> skips whitespace
+
+  switch (ch) {
+  case '(': case ')': case '+': case '-': case '*': case '/':
+    return Token{ch}; // let each character represent itself
+  case '.':
+  case '0': case '1': case '2': case '3': case '4':
+  case '5': case '6': case '7': case '8': case '9':
+  { 
+    cin.putback(ch); // put digit back into the input stream
+    double val;
+    cin >> val; // read a floating-point number
+    return Token{'8',val}; // let '8' represent "a number"
+  }
+  default:
+    error("Bad token");
+  }
+  return Token{'\0'}; // Unreachable, to satisfy compiler
 }
 
-//------------------------------------------------------------------------------
+// ------------------------------------------------------------------
+// Grammar Functions (from Chapter 5.5)
+// ------------------------------------------------------------------
 
-// The putback() member function puts its argument back into the Token_stream's buffer:
-void Token_stream::putback(Token t)
-{
-    if (full) error("putback() into a full buffer");
-    buffer = t;       // copy t to buffer
-    full = true;      // buffer is now full
-}
+double expression(); // Declaration needed for primary() to call expression()
 
-//------------------------------------------------------------------------------
-
-Token Token_stream::get()
-{
-    if (full) {       // do we already have a Token ready?
-        // remove token from buffer
-        full=false;
-        return buffer;
-    }
-
-    char ch;
-    cin >> ch;    // note that >> skips whitespace (space, newline, tab, etc.)
-
-    switch (ch) {
-    case ';':    // for "print"
-    case 'q':    // for "quit"
-    case '(': case ')': case '+': case '-': case '*': case '/':
-        return Token(ch);        // let each character represent itself
-    case '.':
-    case '0': case '1': case '2': case '3': case '4':
-    case '5': case '6': case '7': case '8': case '9':
-        {
-            cin.putback(ch);         // put digit back into the input stream
-            double val;
-            cin >> val;              // read a floating-point number
-            return Token('8',val);   // let '8' represent "a number"
-        }
-    default:
-        error("Bad token");
-    }
-}
-
-//------------------------------------------------------------------------------
-
-Token_stream ts;        // provides get() and putback()
-
-//------------------------------------------------------------------------------
-
-double expression();    // declaration so that primary() can call expression()
-
-//------------------------------------------------------------------------------
-
-// deal with numbers and parentheses
+// ------------------------------------------------------------------
+// Handle Numbers and Parentheses (from Chapter 5.5.4)
+// ------------------------------------------------------------------
 double primary()
 {
-    Token t = ts.get();
-    switch (t.kind) {
-    case '(':    // handle '(' expression ')'
-        {
-            double d = expression();
-            t = ts.get();
-            if (t.kind != ')') error("')' expected");
-            return d;
-        }
-    case '8':            // we use '8' to represent a number
-        return t.value;  // return the number's value
-    default:
-        error("primary expected");
-    }
+  Token t = get_token();
+  switch (t.kind) {
+  case '(': // handle '(' expression ')'
+  { 
+    double d = expression();
+    t = get_token();
+    if (t.kind != ')')
+    error("')' expected");
+    return d;
+  }
+  case '8': // '8' represents "a number"
+    return t.value; // return the number’s value
+  default:
+    error("primary expected");
+  }
+  return 0; // Unreachable
 }
 
-//------------------------------------------------------------------------------
-
-// deal with *, /, and %
+// ------------------------------------------------------------------
+// Handle * and / (from Chapter 5.5.3, with % removed)
+// ------------------------------------------------------------------
 double term()
 {
-    double left = primary();
-    Token t = ts.get();        // get the next token from token stream
-
-    while(true) {
-        switch (t.kind) {
-        case '*':
-            left *= primary();
-            t = ts.get();
-            break;
-        case '/':
-            {
-                double d = primary();
-                if (d == 0) error("divide by zero");
-                left /= d;
-                t = ts.get();
-                break;
-            }
-        default:
-            ts.putback(t);     // put t back into the token stream
-            return left;
-        }
-    }
+  double left = primary();
+  Token t = get_token(); // get the next token
+  while (true) {
+  switch (t.kind) {
+  case '*':
+    left  *= primary();
+    t = get_token();
+    break;
+  case '/':
+  { 
+    double d = primary();
+    if (d == 0)
+    error("divide by zero");
+    left /= d;
+    t = get_token();
+    break;
+  }
+  default:
+    // This is the bug! It "eats" the token.
+    return left; // finally: no more * or /
+  }
+  }
 }
 
-//------------------------------------------------------------------------------
-
-// deal with + and -
+// ------------------------------------------------------------------
+// Handle + and - (from Chapter 5.5.2.3)
+// ------------------------------------------------------------------
 double expression()
 {
-    double left = term();      // read and evaluate a Term
-    Token t = ts.get();        // get the next token from token stream
-
-    while(true) {
-        switch(t.kind) {
-        case '+':
-            left += term();    // evaluate Term and add
-            t = ts.get();
-            break;
-        case '-':
-            left -= term();    // evaluate Term and subtract
-            t = ts.get();
-            break;
-        default:
-            ts.putback(t);     // put t back into the token stream
-            return left;       // finally: no more + or -: return the answer
-        }
-    }
+  double left = term(); // read and evaluate a Term
+  Token t = get_token(); // get the next token
+  while (true) {
+  switch (t.kind) {
+  case '+':
+    left += term(); // evaluate Term and add
+    t = get_token();
+    break;
+  case '-':
+    left -= term(); // evaluate Term and subtract
+    t = get_token();
+    break;
+  default:
+    // This is the bug! It "eats" the token.
+    return left; // finally: no more + or -
+  }
+  }
 }
 
-//------------------------------------------------------------------------------
+// ------------------------------------------------------------------
+// main() function (from Chapter 5.6)
+// ------------------------------------------------------------------
 
 int main()
-try
-{
-    double val = 0;
-    while (cin) {
-        cout << "> ";          // print prompt
-        Token t = ts.get();
-        if (t.kind == 'q') break;
-        if (t.kind == ';')
-            cout << "= " << val << '\n'; // print result
-        else
-            ts.putback(t);
-        val = expression();
-    }
+try{
+  while (cin) // this will always be good as it entered the loop for the first time!
+    cout << expression() << " is the result <<<======\n";
 }
 catch (exception& e) {
-    cerr << "error: " << e.what() << '\n';
-    return 1;
+  cerr << e.what() << '\n';
+  return 1;
 }
 catch (...) {
-    cerr << "Oops: unknown exception!\n";
-    return 2;
+  cerr << "exception \n";
+  return 2;
 }
-
-//------------------------------------------------------------------------------
