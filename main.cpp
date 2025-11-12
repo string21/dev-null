@@ -1,271 +1,74 @@
-#include "std_lib_facilities.h"
+#include <iostream>
 
+/*
+    Exercise 20 in Chapter 3:
+        [1] Write a program where you first enter a set of name- and-value pairs, such as Joe 17 and Barbara 22. For each pair, add the name to a vector called names and the number to a vector called scores (in corresponding positions, so that if names[7]=="Joe" then scores[7]==17). Terminate input with NoName 0. Check that each name is unique and terminate with an error message if a name is entered twice. Write out all the (name,score) pairs, one per line.
+        [2] Modify the program from the previous exercise so that once you have entered the name-and-value pairs, you ask for values: In a loop, when you enter a name, the program will output the corresponding score or name not found.
+        [3] Modify the program from the previous exercise so that once you have entered the name-and-value pairs, you ask for names: In a loop, when you enter a value, the program will output all the names with that score or score not found.
+*/
 
-void what(string what, string value) {
-    cout << what << " with value of " << value << "\n";
+/*
+    Define a class Name_value that holds a string and a value.
+    Rework exercise 20 in Chapter 3 to use a vector<Name_value>
+    instead of two vectors.
+*/
+
+void error(std::string s) {
+    throw std::runtime_error {s};
 }
 
-void what(string what, double value) {
-    cout << what << " with value of " << value << "\n";
-}
-
-void what(string what, int value) {
-    cout << what << " with value of " << value << "\n";
-}
-
-void what(string what, char value) {
-    cout << what << " with value of " << value << "\n";
-}
-
-//------------------------------------------------------------------------------
-
-class Token{
-public:
-    char kind;        // what kind of token
-    double value;     // for numbers: a value 
-    Token(char ch)    // make a Token from a char
-        :kind(ch), value(0) { }
-    Token(char ch, double val)     // make a Token from a char and a double
-        :kind(ch), value(val) { }
+class Name_value {
+    public:
+        std::string name {};
+        int value {};
+        // not sure if doing in-class initializaiton here like this is ok...
 };
 
-//------------------------------------------------------------------------------
-
-class Token_stream {
-public:
-    Token_stream();   // make a Token_stream that reads from cin
-    Token get();      // get a Token (get() is defined elsewhere)
-    void putback(Token t);    // put a Token back
-private:
-    bool full;        // is there a Token in the buffer?
-    Token buffer;     // here is where we keep a Token put back using putback()
-};
-
-//------------------------------------------------------------------------------
-
-// The constructor just sets full to indicate that the buffer is empty:
-Token_stream::Token_stream()
-    :full(false), buffer(0)    // no Token in buffer
-{
-}
-
-//------------------------------------------------------------------------------
-
-// The putback() member function puts its argument back into the Token_stream's buffer:
-void Token_stream::putback(Token t)
-{
-    if (full) error("putback() into a full buffer");
-    buffer = t;       // copy t to buffer
-    full = true;      // buffer is now full
-}
-
-//------------------------------------------------------------------------------
-
-Token Token_stream::get()
-{
-    if (full) {       // do we already have a Token ready?
-        // remove token from buffer
-        full = false;
-        return buffer;
-    }
-
-    char ch;
-    cin >> ch;    // note that >> skips whitespace (space, newline, tab, etc.)
-
-    switch (ch) {
-    case '=':    // for "print"
-    case 'x':    // for "quit" -- now changed to x for "exit" per drill
-    case '(': case ')': case '+': case '-': case '*': case '/': case '{': case '}': // added curly braces here per drill
-    case '!':
-        // cout << "returning symbol from token get: " << ch << "\n";
-        return Token(ch);        // let each character represent itself
-    case '.':
-    case '0': case '1': case '2': case '3': case '4':
-    case '5': case '6': case '7': case '8': case '9':
-    {
-        cin.putback(ch);         // put digit back into the input stream
-        double val;
-        cin >> val;              // read a floating-point number
-        // cout << "returning float from token get: " << val << "\n";
-        return Token('8', val);   // let '8' represent "a number"
-    }
-    default:
-        error("Bad token");
-    }
-    return 0; // satisfy compiler
-}
-
-//------------------------------------------------------------------------------
-
-Token_stream ts;        // provides get() and putback() 
-
-//------------------------------------------------------------------------------
-
-int get_factorial(int num) {
-    int res = 1;
-    for (int i=1; i <= num; ++i) {
-        res *= i;
-    }
-    return res;
-}
-
-//------------------------------------------------------------------------------
-
-double expression();    // declaration so that primary() can call expression()
-
-//------------------------------------------------------------------------------
-
-// deal with numbers and parentheses
-double primary()
-{
-    Token t = ts.get();
-    switch (t.kind) {
-    case '(':    // handle '(' expression ')'
-    {
-        double d = expression();
-        t = ts.get();
-        if (t.kind != ')') error("')' expected");
-            return d;
-    }
-    case '{':
-    {
-        double d = expression();
-        t = ts.get();
-        if (t.kind != '}') error("'}' expected");
-            return d;
-    }
-    case '8':            // we use '8' to represent a number
-        return t.value;  // return the number's value
-    case 'x':
-        error("bye bye..."); // this is temporary... so i can exit this route
-        break;
-    default:
-        error("primary expected");
-    }
-    return 0; // satisfy compiler
-}
-//------------------------------------------------------------------------------
-
-// deal with ! (factorial of an "integer")
-
-double factorial() {
-    double left = primary(); // getting a double back
-
-    if (left-std::floor(left) > 0) { // floaring point? then we cant feed that into factorial...
-        cout << "hey!!! factorial() on " << left << "\n";
-        error("factorial error");
-    }
-
-    Token t = ts.get();
+int main() {
+    std::cout << "Enter name and value pair:" << "\n";
+    std::vector<Name_value> pair;
 
     while(true) {
-        switch(t.kind) {
-            case '!':
-                // treating psuedo int starts and ends with this function call
-                left = (double)get_factorial((int)left); // narrow in widen back to double type
-                t = ts.get();
+        try {
+            std::cout << "> "; // print prompt
+            Name_value temp;
+            std::cin >> temp.name >> temp.value;
+            if (!std::cin)
+                error("bad cin operation");
+            
+            if (temp.name == "NoName" && temp.value == 0)
                 break;
-            default:
-                ts.putback(t);
-                return left; 
+            else
+                pair.push_back(temp);
+        } catch (std::exception& e) {
+            std::cerr << "error: " << e.what() << "\n";
+            std::cin.clear(); // clear the error flag
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // skip bad input
+        } catch (...) {
+            std::cerr << "error: unknown exception has been caught" << "\n"; // terminate program
         }
     }
 
-    return 0.00; // satisfy compiler
-}
+    for (Name_value p : pair) {
+        std::cout << "Name is " << p.name << " with value of " << p.value << "\n";
+    }
 
-
-
-
-//------------------------------------------------------------------------------
-
-// deal with *, /, and %
-double term()
-{
-    double left = factorial();
-    Token t = ts.get();        // get the next token from token stream
-
-    while (true) {
-        switch (t.kind) {
-        case '*':
-            left *= factorial();
-            t = ts.get();
-            break;
-        case '/':
-        {
-            double d = factorial();
-            if (d == 0) error("divide by zero");
-            left /= d;
-            t = ts.get();
-            break;
-        }
-        default:
-            ts.putback(t);     // put t back into the token stream
-            return left;
+    // quick solve -- not trying to catch errors here
+    std::cout << "Enter a name and I shall give your their score lol" << "\n";
+    std::cout << "> ";
+    std::string name {};
+    std::cin >> name;
+    bool isFound = false;
+    for (Name_value p : pair) {
+        if (name == p.name) {
+            isFound = true;
+            std::cout << "Name is " << p.name << " with value of " << p.value << "\n";    
         }
     }
+    if (!isFound)
+        std::cout << "name not found...";
+
+
+    
+    
 }
-
-//------------------------------------------------------------------------------
-
-// deal with + and -
-double expression()
-{
-    double left = term();      // read and evaluate a Term
-    Token t = ts.get();        // get the next token from token stream
-
-    while (true) {
-        switch (t.kind) {
-        case '+':
-            left += term();    // evaluate Term and add
-            t = ts.get();
-            break;
-        case '-':
-            left -= term();    // evaluate Term and subtract
-            t = ts.get();
-            break;
-        default:
-            ts.putback(t);     // put t back into the token stream
-            return left;       // finally: no more + or -: return the answer
-        }
-    }
-}
-
-//------------------------------------------------------------------------------
-
-int main()
-try
-{
-    cout << "Enter expressions using floating-point numbers.\n"
-    << "'x' to exit and '=' to print ...\n> ";
-    double val = 0;
-    while (cin) {
-        Token t = ts.get();
-
-        if (t.kind == 'x') {
-            cout << "got the x, im quitting here...\n";
-            break; // 'q' for quit
-        }
-
-        if (t.kind == '=')        // ';' for "print now"
-            cout << "=" << val << '\n';
-        else {
-            ts.putback(t);
-        }
-
-        val = expression();
-    }
-    // keep_window_open();
-}
-catch (exception& e) {
-    cerr << "error: " << e.what() << '\n';
-    // keep_window_open();
-    return 1;
-}
-catch (...) {
-    cerr << "Oops: unknown exception!\n";
-    // keep_window_open();
-    return 2;
-}
-
-//------------------------------------------------------------------------------
