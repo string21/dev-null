@@ -1,112 +1,113 @@
 #include <iostream>
-#include <random>
 
-/*
-    Redo the “Bulls and Cows” game from exercise 12 in Chapter 4
-    to use four letters rather than four digits.
+// didn't handle all inputs and errors
+// quick solve for chapter 5 exercise 7 
 
-    It did not say to use class but I will try.
-*/
+
+
+// the correct solution
+
+void test () {
+    int total = 0;
+    std::string test = "123";
+    for (char t : test) {
+        total = total * 10 + (t - '0');
+    }
+    std::cout << total << " is now converted to int.\n\n**********\n\n";
+}
+
+
+
 
 void error(std::string s) {
     throw std::runtime_error {s};
 }
 
-int rando(int min, int max) {
-    static unsigned the_seed = time(nullptr);
-    static std::default_random_engine the_engine(the_seed);
-    std::uniform_int_distribution<int> the_distrib(min, max);
-    return the_distrib(the_engine);
-}
+class Money {
+public:
+    int thousand_count {};
+    int hundred_count {};
+    int ten_count {};
+    int one_count {};
 
-class Bullycow {
-    public:
-        std::vector<char> generate_given();
-        int set_bull_count(std::vector<char> given, std::string guess);
-        int get_bull_count();
-        int set_cow_count(std::vector<char> given, std::string guess);
-        int get_cow_count();
-    private:
-        int bull_counter {};
-        int cow_counter {};
-        bool validateGuess(std::vector<char> given, std::string guess);
+    void update_count(int sum) {
+        if (sum >= 1000) {
+            thousand_count = std::floor(sum/1000); 
+        } else if (sum >= 100) {
+            hundred_count = std::floor(sum/100); 
+        } else if (sum >= 10) {
+            ten_count = std::floor(sum/10); 
+        } else if (sum >= 1) {
+            one_count = std::floor(sum/1); 
+        } 
+    }
 };
 
-std::vector<char> Bullycow::generate_given() {
-    std::vector<char> given;
-    given.push_back(rando('a', 'z'));
-    given.push_back(rando('a', 'z'));
-    given.push_back(rando('a', 'z'));
-    given.push_back(rando('a', 'z'));
-    return given;
-}
-
-bool Bullycow::validateGuess(std::vector<char> given, std::string guess) {
-    if (given.size() == guess.size())
-        return false;
-    error("given and guess must be equal in len");
-    return true; // satisfy compiler
-}
-
-int Bullycow::set_bull_count(std::vector<char> given, std::string guess) {
-        validateGuess(given, guess);
-        bull_counter = 0; // reset to zero!
-        for (int i=0; i<given.size(); ++i) {
-            if (given[i] == guess[i]) {
-                ++bull_counter;
-            }
-        }
-    return bull_counter;
-}
-
-int Bullycow::set_cow_count(std::vector<char> given, std::string guess) {
-        validateGuess(given, guess);
-        cow_counter = 0; // reset to zero!
-        for (int i=0; i<given.size(); ++i) {
-            for (int j=0; j<guess.size(); ++j) {
-                if (i != j && given[i] == guess[j]) {
-                    ++cow_counter;
-                } 
-            }
-        }
-    return cow_counter;
-}
-
-int Bullycow::get_bull_count() {
-    return bull_counter;
-}
-
-int Bullycow::get_cow_count() {
-    return cow_counter;
-}
-
 int main() {
-    Bullycow bc;
-    std::vector<char> given = bc.generate_given();
-    std::string guess {};
-    std::cout << "enter your guess\n";
 
-    while(true) {      
-        try {
-            std::cout << "> "; //print prompt
-            std::cin >> guess; 
-            if(!std::cin)
-                error("bad 'cin << guess' operation");
-            if(guess == "exit")
-                break;
+    test();
+    
 
-            bc.set_bull_count(given, guess);
-            bc.set_cow_count(given, guess);
+    Money m;
 
-            if (bc.get_bull_count() == given.size()) {
-                std::cout << "you won! you found all " << bc.get_bull_count() << " bulls!\n";
-                break;
+    std::cout << "enter an integer:\n> "; // print prompt
+
+    std::string input {};
+    std::cin >> input;
+
+    int sum {};
+    int total {};
+    
+    for (int i = 0; i < input.size(); ++i) {
+        for (int j = 0; j < input.size() - i; ++j) {
+            if (j == 0) {
+                sum += (input[i] - '0');
             } else {
-                std::cout << bc.get_bull_count() << " bull/s found\n";
-                std::cout << bc.get_cow_count() << " cow/s found\n";
+                sum *= 10;
             }
-        } catch (std::exception& e) {
-            std::cerr << "error: " << e.what() << "\n";
         }
+
+        // std::cout << "sum is " << sum << "\n";
+
+        m.update_count(sum);
+        total += sum;
+        sum = 0;
     }
+
+    if (total > 0)
+        std::cout << total << " is ";
+
+    bool started = false;
+
+    if(m.thousand_count > 0) {
+        started = true;
+        std::cout << m.thousand_count << " thousands";
+    }
+
+    if(m.hundred_count > 0) {
+        if (started) {
+            std::cout << " and ";
+        }
+        started = true;
+        std::cout << m.hundred_count << " hundreds";
+    }
+
+    if (m.ten_count > 0) {
+        if (started) {
+            std::cout << " and ";
+        }
+        started = true;
+        std::cout << m.ten_count << " tens";
+    }
+
+    if (m.one_count > 0) {
+        if (started) {
+            std::cout << " and ";
+        }
+        std::cout << m.one_count << " ones";
+    }
+
+    if (total > 0)
+        std::cout << ".\n";
+
 }
