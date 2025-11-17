@@ -1,3 +1,1 @@
-reds " << m.hundred_count << "\n";
-    std::cout << "tens " << m.ten_count << "\n";
-    std::cout << "ones
+Token(char k) : kind{k}, value{0.0}{};
