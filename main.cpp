@@ -1,106 +1,95 @@
-
 #include <iostream>
+#include <limits>
+
+/*
+    This program should have error checking.
+    Make sure that all erroneous inputs will generate good error messages.
+*/
 
 void error(std::string s) {
     throw std::runtime_error {s};
 }
 
-class Token {
-    public:
-        Token(){};
-        Token(char k) : kind{k}, value{0.0}{};
-        Token(char k, double v) : kind{k}, value{v}{};
-        char kind;
-        double value;
-};
+void clear_buffer() {
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+}
 
-
-class Token_stream {
-    public:
-        Token get();
-        void putback(Token t);
-
-    private:
-        bool full = false;
-        Token buffer;
-};
-
-void Token_stream::putback(Token t) {
-    if (full) {
-        error("buffer is full");
-    } else {
-        std::cout << "buffer is not full, putting back process starting here...\n";
-        buffer = t;
-        full = true;
-
-        std::cout << "you have sucessfully stored in the buffer:\n";
-        std::cout << "buffer kind: " << buffer.kind << "\n";
-        std::cout << "buffer value: " << buffer.value << "\n";
+int get_factorial(int num) {
+    // Base case: If num is 1 or 0, the factorial is 1
+    if (num <= 1) {
+        return 1;
     }
-};
+    // Recursive step: num * factorial of (num - 1)
+    return num * get_factorial(num - 1);
+}
 
-Token Token_stream::get() {
+//P(a, b) = (a!) / ((a - b)!)
+int get_permutation(int a, int b) {
+    int result{};
+    result = (get_factorial(a)) / (get_factorial(a - b));
+    return result;
+}
 
-    
-
-    if (full) {
-        full = false;
-        return buffer;
-    }
-
-    Token t;
-    char ch{};
-    std::cin >> ch;
-
-    switch(ch) {
-        case '+': case '-': case '*': case '/':
-        case '(': case ')': case '!':
-        {
-            t.kind = ch;
-            break;
-        }
-
-        case '0': case '1': case '2': case '3': case '4':
-        case '5': case '6': case '7': case '8': case '9':
-        case '.':
-        {
-            std::cin.putback(ch);
-            double temp{}; 
-            std::cin >> temp;
-            t.kind = '8';
-            t.value = temp;
-            break;
-        }
-
-        default:
-        {
-            t.kind = 'x';
-        }
-    }
-
-    std::cout << "you are getting back a token with the following attributes:\n";
-    std::cout << "---- kind is " << t.kind << "\n";
-    std::cout << "---- value is " << t.value << "\n";
-    
-    
+//C(a, b) = (P(a, b)) / (b!)
+int get_combination(int a, int b, int permutation) {
+    int result{};
+    result = (permutation) / (get_factorial(b));
+    return result;
 }
 
 int main() {
-    
-    Token_stream ts;
 
-    Token a = ts.get();
-    ts.putback(a);
+    int a{};
+    int b{};
+    char choice{};
+    
+    while(true) {
+        try{
 
-    Token b = ts.get();
-    Token c = ts.get();
-    
-    
-    
-    
-    
+            std::cout << "\nenter two numbers:\n> ";
+            std::cin >> a >> b;
+            if (!std::cin)
+                error("bad cin operation");
+            break;
 
+        } catch(std::exception& e) {
 
-    
-    
+            std::cerr << "\nerror: " << e.what() << "\n";
+            std::cin.clear();
+            clear_buffer();
+
+        }
+    }
+
+    clear_buffer();
+
+    while(true) {
+        try{    
+
+            std::cout << "\ntype 'p' to get permutation or 'c' for combination:\n> ";
+            std::cin >> choice;
+            if (!std::cin)
+                error("bad cin operation");
+        
+            std::cout << "\n";
+        
+            if (choice == 'p') {
+                std::cout << "permutation is " << get_permutation(a, b);
+            } else if (choice == 'c') {
+                std::cout << "combination is " << get_combination(a, b, get_permutation(a, b));
+            } else {
+                error("invalid choice");
+            }
+        
+            std::cout << "\n\n";
+            break;
+
+        } catch(std::exception& e) {
+
+            std::cerr << "error: " << e.what() << "\n";
+            std::cin.clear();
+            clear_buffer();
+
+        }
+    }
 }
